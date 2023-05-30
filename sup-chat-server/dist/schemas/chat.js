@@ -13,6 +13,7 @@ const ChatSchema = new Schema({
     admins: [{ type: Schema.Types.ObjectId, ref: 'User', required: true }],
     name: { type: String, required: true },
     description: { type: String },
+    createdAt: { type: Date }
 });
 // Define and export the model
 export const Chat = mongoose.model("Chat", ChatSchema);

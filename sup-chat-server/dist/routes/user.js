@@ -1,6 +1,8 @@
 import express from "express";
-import { login, signUp, addContact, addChat } from "../controllers/user.js";
+import { login, signUp, addContact, addChat, getUserByToken } from "../controllers/user.js";
 const UserRouter = express.Router();
+UserRouter.route("/getUserByToken")
+    .post(getUserByToken);
 UserRouter.route("/login")
     .post(login);
 UserRouter.route("/signUp")

@@ -6,14 +6,14 @@ import { useNavigate } from "react-router";
 import { useEffect } from "react";
 
 function App() {
-  const navigate = useNavigate();
-  const user = useSelector((state) => state.userSlice.user);
-  useEffect(() => {
-    if (!user) {
-      navigate("/login");
-    }
-  }, [user]);
-  
+  // const navigate = useNavigate();
+  // const user = useSelector((state) => state.userSlice.user);
+  // useEffect(() => {
+  //   if (!user) {
+  //     navigate("/login");
+  //   }
+  // }, [user]);
+
   return (
     <div className="App">
       <MainLayout>

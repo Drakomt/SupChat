@@ -1,17 +1,24 @@
 .messageList {
-    /* flex-grow:1; */
-    /* max-height: calc(100vh - 100px); */
-    overflow-y: auto;
+    box-sizing: border-box;
     margin-bottom: 1rem;
     padding: 1rem;
-    height: 68vh;
+    height: 72vh;
     border: 1px solid black;
     border-radius: 15px;
+    flex-grow: 1;
 }
 
-.messageCard {
-    align-items: start;
-    max-width: 60%;
-    margin-top: 5px;
-    padding: 2px 10px;
+.messageList>*>*>* {
+    display: flex;
+    flex-direction: column;
+}
+
+.messageList>*>*>*>.messageCard.mymessage {
+    align-self: flex-start;
+    background-color: aqua;
+}
+
+.messageList>*>*>*>.messageCard.othermessage {
+    align-self: flex-end;
+    background-color: bisque;
 }

@@ -1,4 +1,4 @@
-import { useState,React, useRef } from "react";
+import { useState,React, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Input } from "../UIkit/Components/Input/Input/Input";
@@ -7,6 +7,7 @@ import { Rows } from "../UIkit/Layouts/Line/Line" ;
 import { toast } from "../UIkit/utils/sweetAlert";
 import { AuthLayout } from "../UIkit/Layouts/AuthLayout/AuthLayout";
 import { fetchUser } from "../store/userSlice";
+import { Loading } from "../UIkit/Components/Loading/Loading";
 
 export const Login = () => {
     const dispatch = useDispatch(); 
@@ -16,19 +17,23 @@ export const Login = () => {
     const error = useSelector(state => state.userSlice.error);
     const loading = useSelector(state => state.userSlice.loading);
 
-    if (user) {
-        toast("success","login successful");
-        navigate("/chats");
-        return
+    const displayToast = async (type, message) => {
+        await toast(type, message);
     }
-    if(error) toast("error", "login failed");
+
+    useEffect (() => {
+        if (user) {
+          displayToast("success", "login successful");
+          navigate("/chats");
+        }else if (error) displayToast("error", "login failed");
+    },[user,error])
 
     const submit = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const email = formData.get('email');
         const password = formData.get('password');
-        if (password != inputData.current.password || email != inputData.current.email){
+        if (password !== inputData.current.password || email !== inputData.current.email){
             inputData.current.email = email;
             inputData.current.password = password;
             dispatch(fetchUser({email,password}));
@@ -48,7 +53,7 @@ export const Login = () => {
                 </Rows>
             </form>
         </div>)
-    return  ((error || !loading) && <AuthLayout>{form}</AuthLayout>) || (loading && <div>loading...</div>)
+    return  ((error || !loading) && <AuthLayout>{form}</AuthLayout>) || (loading && <Loading/>)
 
    
 }

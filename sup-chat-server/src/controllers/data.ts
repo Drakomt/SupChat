@@ -1,7 +1,8 @@
+import { Sup } from "../repository/Sup.js";
 import { Chat } from "../schemas/chat.js";
 import { Message } from "../schemas/message.js";
 import { User } from "../schemas/user.js";
-
+const Dal = new Sup();
 
 export const fetchAllUsers = async (req,res) => {
     try {
@@ -32,7 +33,19 @@ export const fetchNonFriendUsers = async (req, res) => {
   }
 };
 
-
+export const findUserList = async (req, res) =>{
+  try{
+    const usersIds = req.body
+    const users = await Dal.userRep.getManyById(usersIds);
+    const usersData = users.map(user => {
+      return {email:user.email,username:user.username}});
+    res.send(JSON.stringify(usersData));
+  }
+  catch(error){
+    console.error(error);
+    res.status(500).send("Internal server error");
+  }
+}
 
 export const fetchAllMessages = async (req, res) => {
   try {
