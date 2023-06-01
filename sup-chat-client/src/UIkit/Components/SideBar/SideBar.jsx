@@ -41,7 +41,7 @@ export const SideBar = () => {
             <Rows>
                 <Saparate>
                     <SideBarDropDown/>
-                    <Button onClick={logoutButtonClick}>Logout</Button>
+                    <Button onClick={logoutButtonClick} className={"logout"}>Logout</Button>
                 </Saparate>    
                 <SearchBar onSearch={setSearchTerm}/>
                 { !isLoading && !error && <CardList items={data ? filteredList : data} cardType={cardType}/>}

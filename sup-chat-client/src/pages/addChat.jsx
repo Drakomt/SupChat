@@ -7,7 +7,7 @@ import { Input } from "../UIkit/Components/Input/Input/Input";
 import { AuthLayout } from "../UIkit/Layouts/AuthLayout/AuthLayout";
 import { emitNewChat } from "../services/socket";
 
-export const AddChat = () => {
+export const AddChat = ({closeCb}) => {
   const contacts = useSelector((state) => state.userSlice.user?.friends);
   const currentUser = useSelector((state) => state.userSlice.user);
 
@@ -57,9 +57,11 @@ export const AddChat = () => {
       admins:adminIds,
       participants: participantIds,
       messages: [],
+      createdAt: Date.now()
     };
     console.log("new chat : ", newChat);
     emitNewChat(newChat);
+    closeCb();
   };
 
   const form = (

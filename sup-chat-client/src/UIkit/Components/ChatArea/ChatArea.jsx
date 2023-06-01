@@ -14,6 +14,8 @@ import socket, {
   emitTyping,
   emitStopTyping,
 } from "../../../services/socket";
+//import { Picker } from "emoji-mart";
+//import "emoji-mart/css/emoji-mart.css";
 import "./ChatArea.css";
 
 export const ChatArea = () => {
@@ -60,9 +62,8 @@ export const ChatArea = () => {
     }
   }
 
-    useEffect(() => {
-      
 
+    useEffect(() => {
         return () => {
           if(typingTimeoutRef.current) {
             clearTimeout(typingTimeoutRef.current);

@@ -7,6 +7,7 @@ import { AuthLayout } from "../UIkit/Layouts/AuthLayout/AuthLayout";
 import { useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux";
 import { createUser } from "../store/signUpSlice";
+import { Loading } from "../UIkit/Components/Loading/Loading";
 
 
 export const SignUp = () => {
@@ -61,5 +62,5 @@ export const SignUp = () => {
      </div>
    );
 
-    return (error || !loading) && <AuthLayout>{form}</AuthLayout> || loading && <div>loading...</div>
+    return (error || !loading) && <AuthLayout>{form}</AuthLayout> || loading && <Loading/>
 }

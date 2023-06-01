@@ -7,4 +7,5 @@ export interface IRepository<T> {
   update(id: Schema.Types.ObjectId, obj: T): Promise<void>;
   delete(id: String): Promise<void>;
   getById(id:Schema.Types.ObjectId) : Promise<T>;
+  getManyById(List:String[]) : Promise<T[]>;
 }

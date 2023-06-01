@@ -6,6 +6,10 @@ export class Repository<T> implements IRepository<T> {
   constructor(model: Model<T>) {
     this.model = model;
   }
+  async getManyById(List: String[]): Promise<T[]> {
+    const items = await this.model.find({ _id: { $in: List } })
+    return items;
+  }
 
   async add(obj: T): Promise<void> {
     await this.model.create(obj);

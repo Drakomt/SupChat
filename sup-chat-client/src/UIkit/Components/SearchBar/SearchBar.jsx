@@ -10,7 +10,7 @@ export const SearchBar = ({ onSearch }) => {
   return (
     <div className="searchBar">
           <Line>
-            <Input onTextChange={setText} placeholder={"Search..."} name={"search"}/>
+            <Input onTextChange={setText} placeholder={"Search..."} name={"search"} className={"searchInput"}/>
             <Button onClick={() => onSearch(text)} className={"searchBtn"}>
               <SearchIcon/>
             </Button>

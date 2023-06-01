@@ -5,6 +5,9 @@ import {
   reciveMessage,
   typing,
   stoppedTyping,
+  leaveChat,
+  removeFromChatRoom,
+  updateChat,
 } from "../store/userSlice";
 const URL = require("../URL.json").url;
 
@@ -21,6 +24,10 @@ export const emitMessage = (message, chat) => {
 
 export const emitNewChat = (chat) => socket.emit("newChat", chat);
 
+export const emitUpdateChat = (chat) => socket.emit('updateChat',chat);
+
+export const emitUpdateUser = (user) => socket.emit('updateUser',user);
+
 const listenToMessages = () =>
   socket.on("message", (data) => store.dispatch(reciveMessage(data)));
 
@@ -29,6 +36,12 @@ const listenToNewChats = () =>
     socket.emit("joinRoom", data._id);
     store.dispatch(addNewChat(data));
   });
+  export const listenToChatUpdates = () =>{
+    socket.on("updateChat", (data) => store.dispatch(updateChat(data)));
+  }
+  export const listenToUserRemove = () =>{
+    socket.on("removeFromRoom", (data) => store.dispatch(removeFromChatRoom(data)));
+  }
 
 export const connectSocket = (user) => {
   if (!socket.connected) {
@@ -40,15 +53,21 @@ export const connectSocket = (user) => {
     socket.emit("subscribe", user._id);
     listenToMessages();
     listenToNewChats();
+    listenToUserRemove();
+    listenToChatUpdates();
     typingMessage();
     stopTyping();
   }
 };
 
-export const leaveChatRoom = (chat) => socket.emit("leaveRoom", chat._id);
+// export const leaveChatRoom = (chat) => socket.emit("leaveRoom", chat._id);
 
-export const removeFromChatRoom = (chat, user) =>
-  socket.emit("removeFromRoom", { chat_id: chat._id, user_id: user._id });
+export const removeSelfFromChatRoom = (chat) =>
+  {
+    const user = store.getState().userSlice.user;
+    socket.emit("removeFromRoom", { chat_id: chat._id, user_id: user._id });
+    store.dispatch(leaveChat(chat,user));
+  }
 
 export const addToRoom = (chat, user) =>
   socket.emit("addToRoom", { chat_id: chat._id, user_id: user._id });
