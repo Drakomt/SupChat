@@ -38,7 +38,7 @@ export const findUserList = async (req, res) =>{
     const usersIds = req.body
     const users = await Dal.userRep.getManyById(usersIds);
     const usersData = users.map(user => {
-      return {email:user.email,username:user.username}});
+      return {email:user.email,username:user.username, _id:user._id}});
     res.send(JSON.stringify(usersData));
   }
   catch(error){

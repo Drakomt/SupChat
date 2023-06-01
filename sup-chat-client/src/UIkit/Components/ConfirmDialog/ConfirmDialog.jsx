@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 
-export const ConfirmDialog = ({action, startOpen,close}) => {
+export const ConfirmDialog = ({action, startOpen = false,close}) => {
   const handleClose = () => {
     close();
   };

@@ -8,8 +8,14 @@
 .ChatInfo>.Rows {
     align-items: center;
 }
+.cameraDrawer{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 30px;
+}
 
-.ChatInfo>*>.imageDetails {
+.imageDetails {
     width: 20vh;
     height: 20vh;
     border: 1px solid black;
@@ -18,6 +24,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 50px;
 }
 
 @media screen and (min-width: 768px) {

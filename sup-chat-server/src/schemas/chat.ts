@@ -26,7 +26,8 @@ const ChatSchema: Schema = new Schema({
   admins: [{ type: Schema.Types.ObjectId, ref: 'User', required: true }],
   name: { type: String, required: true },
   description: { type: String },
-  createdAt:{type:Date}
+  createdAt:{type:Date},
+  imageUrl: {type: String},
 });
 
 

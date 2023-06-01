@@ -9,8 +9,14 @@ import {
   Typography,
 } from "@mui/material";
 import EmailIcon from "@mui/icons-material/Email";
+import { Button } from "../UIkit/Components/Button/Button";
+import { useDispatch } from "react-redux";
+import { updateUser } from "../store/userSlice";
+import { emitUpdateUser } from "../services/socket";
 
 export const Profile = ({ user }) => {
+  const dispatch = useDispatch();
+
   const [isEditing, setIsEditing] = useState(false);
   const [username, setUsername] = useState(user.username);
   const [email, setEmail] = useState(user.email);
@@ -30,6 +36,13 @@ export const Profile = ({ user }) => {
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
   };
+
+  const saveChanges = () =>{
+    if(email != user.email || username != user.username){
+      dispatch(updateUser({email, username}));
+      emitUpdateUser({...user, email, username});
+    }
+  }
 
   return (
     <div className="profile"
@@ -87,6 +100,9 @@ export const Profile = ({ user }) => {
             )
           }
         />
+      </ListItem>
+      <ListItem>
+        <Button onClick = {() => saveChanges()}>save</Button>
       </ListItem>
     </div>
   );
