@@ -1,0 +1,10 @@
+.UserInfo{
+    background-color: var(--primary);
+    height: 100vh;
+    width: 100%;
+    /* display: none; */
+}
+
+.UserInfo>.Rows {
+    align-items: center;
+}

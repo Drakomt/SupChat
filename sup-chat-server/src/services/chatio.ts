@@ -12,13 +12,7 @@ const leaveRoomEventName: string = "leaveRoom";
 const addToRoomEventName: string = "addToRoom";
 const removeFromRoomEventName: string = "removeFromRoom";
 const createChatEventName: string = "newChat";
-
-const remove = (array: Array<any>, item: any) => {
-  const index = array.indexOf(item);
-  if (index > -1) {
-    array.splice(index, 1);
-  }
-};
+const updateChatEventName: string = "updateChat";
 
 const newMessage = async (data: any, io: Server, socket: Socket) => {
   console.log(`new message recived: ${data.message}`);
@@ -53,34 +47,32 @@ const addToRoom = async (data: any, io: Server, socket: Socket) => {
   socket.broadcast.to(chat_id).emit("addToRoom", user);
 };
 
-const removeFromRoom = async (data: any, io: Server, socket: Socket) => {
+const removeFromRoom = async (
+  data: any,
+  io: Server,
+  socket: Socket,
+  users: Map<string, Socket>
+) => {
   const { chat_id, user_id } = data;
   const chat = await Dal.chatRep.getById(chat_id);
   const user = await Dal.userRep.getById(user_id);
-  remove(chat.participants, user);
-  remove(chat.admins, user);
-  remove(user.chats, chat);
+
+  chat.participants = chat.participants.filter(
+    (p) => p._id.toString() !== user._id.toString()
+  );
+  chat.admins = chat.admins.filter(
+    (p) => p._id.toString() !== user._id.toString()
+  );
+  user.chats = user.chats.filter(
+    (c) => c._id.toString() !== chat._id.toString()
+  );
+
   await Dal.chatRep.update(chat._id, chat);
   await Dal.userRep.update(user._id, user);
-  socket.broadcast.to(chat_id).emit("removeFromRoom", user);
+  socket.broadcast.to(chat_id).emit("removeFromRoom", { user, chat });
+  const userSocket = users.get(user_id);
+  userSocket?.leave(chat_id);
 };
-
-// const createChat = async (data: any, io: Server, socket: Socket, users:Map<string,Socket>) => {
-//   const newChat = new Chat({...data});
-//   await Dal.chatRep.add(newChat);
-//   const participants = [];
-//   data.participants.forEach(async (p) => participants.push(await Dal.userRep.getById(p._id)));
-//   participants.forEach(async (user) => {
-//     user.chats.push(newChat);
-//     await Dal.userRep.update(user._id,user);
-//   });
-//   newChat.participants = {...newChat.participants,...participants}
-//   await Dal.chatRep.update(newChat._id,newChat);
-//   participants.forEach( (p) => {
-//     const pSocket = users.get(p._id);
-//     pSocket && pSocket.emit('newChat', newChat);
-//   });
-// }
 
 const createChat = async (
   data: any,
@@ -101,6 +93,44 @@ const createChat = async (
   });
 };
 
+const updateChat = async (
+  data: any,
+  io: Server,
+  socket: Socket,
+  users: Map<string, Socket>
+) => {
+  const Chat = await Dal.chatRep.getById(data._id);
+  Chat.participants.forEach(async (p) => {
+    if (!data.participants.includes(p._id.toString())) {
+      const user = await Dal.userRep.getById(p._id);
+      Chat.participants = Chat.participants.filter(
+        (p) => p._id.toString() !== user._id.toString()
+      );
+      Chat.admins = Chat.admins.filter(
+        (p) => p._id.toString() !== user._id.toString()
+      );
+      user.chats = user.chats.filter(
+        (c) => c._id.toString() !== Chat._id.toString()
+      );
+      await Dal.userRep.update(user._id, user);
+      const userSocket = users.get(user._id.toString());
+      userSocket?.leave(Chat._id);
+      userSocket?.emit('removeFromRoom',{chat:Chat, user:user})
+    }
+  });
+
+  if(data.imageUrl){
+    Chat.imageUrl = data.imageUrl;
+    io.emit("chatImageUpdated", {chatId: data._id, newImageUrl: data.imageUrl});
+  }
+  
+  Chat.name = data.name
+  Chat.description = data.description;
+  await Dal.chatRep.update(Chat._id, Chat);
+
+  socket.broadcast.to(data._id).emit("updateChat", Chat);
+};
+
 const chatEvents = {
   functions: [
     newMessage,
@@ -109,6 +139,7 @@ const chatEvents = {
     addToRoom,
     removeFromRoom,
     createChat,
+    updateChat,
   ],
   eventNames: [
     newMessageEventName,
@@ -117,6 +148,7 @@ const chatEvents = {
     addToRoomEventName,
     removeFromRoomEventName,
     createChatEventName,
+    updateChatEventName,
   ],
 };
 

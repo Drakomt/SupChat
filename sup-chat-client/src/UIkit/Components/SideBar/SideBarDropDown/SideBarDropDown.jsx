@@ -8,7 +8,7 @@ import { fetchUsers, updateDisplayParams } from "../../../../store/sideBarDispla
 import { UserCard } from "../../Cards/UserCard/UserCard"
 import { ChatCard } from "../../Cards/ChatCard/ChatCard"
 
-export const SideBarDropDown = () => {
+export const SideBarDropDown = ({ searchTerm }) => {
     const dispatch = useDispatch()
     const contacts = useSelector(state => state.userSlice.user?.friends);
     const chats = useSelector(state => state.userSlice.user?.chats);
@@ -29,7 +29,7 @@ export const SideBarDropDown = () => {
 
     const options = ['users', 'chats', 'contacts']
     const actions =[
-        () => dispatch(fetchUsers(user)),
+        () => dispatch(fetchUsers({user, text:searchTerm || '..................'})),
         () => dispatch(updateDisplayParams(chatDisplayParams)),
         () => dispatch(updateDisplayParams(contactsDisplayParams))
     ];

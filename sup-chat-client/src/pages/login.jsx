@@ -33,7 +33,7 @@ export const Login = () => {
         const formData = new FormData(e.target);
         const email = formData.get('email');
         const password = formData.get('password');
-        if (password != inputData.current.password || email != inputData.current.email){
+        if (password !== inputData.current.password || email !== inputData.current.email){
             inputData.current.email = email;
             inputData.current.password = password;
             dispatch(fetchUser({email,password}));

@@ -7,12 +7,33 @@ export const chatDisplaySlice = createSlice({
     doDisplay:false,
     participantList:[],
     error:null,
-    isLoading:false
+    isLoading:false,
+    viewChat: 'sidebar',
+    isMobile: window.innerWidth <= 768,
+    isChatVisible: false,
+    isInfoVisible: false,
   },
   reducers: {
     setDisplay(state, action) {
       state.doDisplay = action.payload;
     },
+    setViewChat(state,action) {
+      state.viewChat = action.payload;
+    },
+    setIsMobile(state,action){
+      state.isMobile = action.payload;
+    },
+    setIsChatVisible(state,action){
+      state.isChatVisible = action.payload;
+    },
+    setIsInfoVisible(state,action){
+      state.isInfoVisible = action.payload;
+    },
+    resetParticipants(state, action){
+      state.error = null;
+      state.isLoading = false;
+      state.participantList = [];
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -35,4 +56,4 @@ export const chatDisplaySlice = createSlice({
 });
 
 export const chatDisplayreucer = chatDisplaySlice.reducer;
-export const { setDisplay } = chatDisplaySlice.actions;
+export const { setDisplay,resetParticipants, setViewChat, setIsMobile,setIsChatVisible,setIsInfoVisible } = chatDisplaySlice.actions;

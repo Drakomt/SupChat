@@ -9,6 +9,8 @@ export interface IChat extends Document {
   admins: IUser[];
   name: string;
   description: string;
+  createdAt:{type:Date},
+  imageUrl: string;
 }
 
 /* // Define the schema
@@ -26,7 +28,8 @@ const ChatSchema: Schema = new Schema({
   admins: [{ type: Schema.Types.ObjectId, ref: 'User', required: true }],
   name: { type: String, required: true },
   description: { type: String },
-  createdAt:{type:Date}
+  createdAt:{type:Date},
+  imageUrl: {type: String},
 });
 
 

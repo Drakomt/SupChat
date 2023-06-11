@@ -2,31 +2,44 @@ import { Sup } from "../repository/Sup.js";
 import { IUser, User } from "../schemas/user.js";
 import { Chat } from "../schemas/chat.js";
 import bcrypt from "bcrypt";
-import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
+import jwt, { Secret, JwtPayload } from "jsonwebtoken";
 import { Schema } from "mongoose";
+import { Request,Response } from "express";
+import path from "path";
+import fs from "fs";
 const Dal = new Sup();
 
-
-
-export async function signUp(request, response){
+export async function signUp(request, response) {
   try {
     const saltRounds = 12;
     const { email, username, password } = request.body;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-    console.log("email:",email,"username:",username,"password:",hashedPassword);
-    const newUser = new User({ email, username, password: hashedPassword });
+    console.log(
+      "email:",
+      email,
+      "username:",
+      username,
+      "password:",
+      hashedPassword
+    );
+    const newUser = new User({
+      email,
+      username,
+      password: hashedPassword,
+      createdAt: Date.now(),
+      imageUrl: `/images/chats/${request.file?.filename}`,
+    });
     const signUpUser = await Dal.userRep.add(newUser);
     response.sendStatus(201);
   } catch (error) {
     console.log("signUp error:", error);
-    response.redirect('signUp');
+    response.redirect("signUp");
   }
 }
 
-export const SECRET_KEY = 'mySecretKey';
+export const SECRET_KEY = "mySecretKey";
 
-
-export async function getUserByToken(request, response)  {
+export async function getUserByToken(request, response) {
   try {
     const token = request.body.token;
     //console.log("token:", token);
@@ -40,8 +53,7 @@ export async function getUserByToken(request, response)  {
     console.log("Token error: ", error);
     response.status(404).send("Token not Valid");
   }
-};
-
+}
 
 export async function login(request, response) {
   try {
@@ -55,32 +67,33 @@ export async function login(request, response) {
       const IsValid = !(foundUser == null || !isPasswordMatch);
       if (IsValid) {
         // Generate a new token
-        const newToken = jwt.sign({ userId : foundUser.id},SECRET_KEY, {
+        const newToken = jwt.sign({ userId: foundUser.id }, SECRET_KEY, {
           expiresIn: "1h",
         });
-        
+
         response.json({ token: newToken, user: foundUser });
       }
-    }
-    else {
+    } else {
       response.status(404).send("user not found");
     }
-  }
-  catch (error) {
+  } catch (error) {
     console.log("Login error:", error);
     response.response.status(500).send("Internal server error");
   }
 }
 
+
 export async function addContact(request, response) {
   console.log("adding a contact...");
-  console.log("body:", request.body);
-  const updatedUserData = request.body;
+  console.log("friends: ", request.body.user.friends);
+  const updatedUserData = request.body.user;
   const updatedUser = await Dal.userRep.getById(updatedUserData._id);
   updatedUser.friends = updatedUserData.friends;
   await Dal.userRep.update(updatedUser._id, updatedUser);
+  console.log("User Updated");
   response.status(202).send("user updated");
 }
+
 
 export async function addChat(request, response) {
   console.log("adding a Chat...");
@@ -95,4 +108,34 @@ export async function addChat(request, response) {
     await Dal.userRep.update(user._id, user);
   });
   response.status(202).send("chat updated");
+}
+
+
+export const uploadUserImage = async (req: Request,res: Response) => {
+  if(!req.file){
+    res.status(400).json({error: 'No file uploaded'});
+  }
+
+  const userId = req.params.id;
+  const user = await User.findById(userId);
+  if(!user){
+    res.status(404).json({error: 'Chat not found'});
+  }
+
+  // Delete the existing image file if one exists
+  if(user.imageUrl) {
+    const oldImagePath = path.join(process.cwd(), "..", "..", "public", "images", "Users", path.basename(user.imageUrl));
+    fs.unlink(oldImagePath, (err) => {
+      if (err) console.log(err);
+    });
+  }
+
+  const imageUrl = `/images/chats/${req.file.filename}`;
+  const updatedUser = await User.findByIdAndUpdate(userId, { imageUrl }, { new: true });
+
+  if(!updatedUser){
+    return res.status(404).json({error: 'User not found'});
+  }
+  
+  return res.status(200).json({imageUrl});
 }

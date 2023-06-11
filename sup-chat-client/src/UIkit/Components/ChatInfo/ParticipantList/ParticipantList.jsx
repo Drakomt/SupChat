@@ -1,20 +1,17 @@
 import { Fragment } from "react";
 import { Line, Saparate, Rows } from "../../../Layouts/Line/Line";
 import "./ParticipantList.css";
-
-export const ParticipantList = ({ participants, admins }) => {
+import { Button } from "../../Button/Button";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import { Participant } from "./Participant/Participant";
+export const ParticipantList = ({ participants, admins, isAdmin = false, onRemove }) => {
   const List = participants?.map((p) => {
     return (
-      <div className="participant" key={p._id}>
-        <Saparate>
-          <div>{p.email}</div>
-          <div>{p.username}</div>
-        </Saparate>
-      </div>
+      <Participant participant={p} admins={admins} isUserAdmin={isAdmin} onRemove={onRemove} key={p._id}/>
     );
   });
   return (
-    <div className='ParticipantList'>
+    <div className="ParticipantList">
       <Rows>{List}</Rows>
     </div>
   );

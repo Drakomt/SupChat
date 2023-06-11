@@ -7,14 +7,25 @@
 .ChatInfo>.Rows {
     align-items: center;
 }
+.cameraDrawer{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 30px;
+}
 
-.ChatInfo>*>.imageDetails {
-    width: 20%;
-    height: 20%;
+.imageDetails {
+    width: 20vh;
+    height: 20vh;
     border: 1px solid black;
     border-radius: 50%;
     margin-top: 5%;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 50px;
+}
+
+.file {
+    display: none;
 }

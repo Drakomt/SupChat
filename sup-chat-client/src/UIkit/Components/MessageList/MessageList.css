@@ -6,6 +6,7 @@
     border: 1px solid black;
     border-radius: 15px;
     flex-grow: 1;
+    background: url("http://localhost:8080/images/chats/chat-bg.jpg") center / cover no-repeat;
 }
 
 .messageList>*>*>* {
@@ -20,5 +21,5 @@
 
 .messageList>*>*>*>.messageCard.othermessage {
     align-self: flex-end;
-    background-color: bisque;
+    background-color: bisque;  
 }
