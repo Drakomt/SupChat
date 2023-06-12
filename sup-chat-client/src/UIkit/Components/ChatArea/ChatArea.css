@@ -1,7 +1,7 @@
 .chatArea{
     background-color: var(--primary);
     height: 100%;
-    width: 100%
+    width: 100%;
 }
 
 .chatArea > p {
@@ -47,7 +47,7 @@
 }
 
 .inputForm{
-    width: 90%;
+    width: 85%;
     align-items: center;
     justify-content: center;
 }

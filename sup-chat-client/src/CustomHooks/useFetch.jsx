@@ -29,5 +29,3 @@ export const UseFetch = (url, method, data, dependecies = [], execute = true) =>
         error
     ];
 }
-
-

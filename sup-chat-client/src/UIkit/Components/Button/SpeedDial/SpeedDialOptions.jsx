@@ -10,7 +10,7 @@ export const SpeedDialOptions = ({ setView }) => {
     const [open, setOpen] = useState(false);
 
     const actions = [
-        { icon: <ChatIcon />, name: 'New Chat', view: 'chat' },
+        { icon: <ChatIcon />, name: 'New Chat', view: 'addChat' },
         { icon: <PersonIcon />, name: 'Profile', view: 'profile' },
         { icon: <SidebarIcon />, name: 'Sidebar', view: 'sidebar' },
     ];

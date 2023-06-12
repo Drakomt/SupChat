@@ -7,7 +7,7 @@ import { Participant } from "./Participant/Participant";
 export const ParticipantList = ({ participants, admins, isAdmin = false, onRemove }) => {
   const List = participants?.map((p) => {
     return (
-      <Participant participant={p} admins={admins} isUserAdmin={isAdmin} onRemove={onRemove}/>
+      <Participant participant={p} admins={admins} isUserAdmin={isAdmin} onRemove={onRemove} key={p._id}/>
     );
   });
   return (

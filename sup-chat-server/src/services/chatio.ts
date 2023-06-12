@@ -47,32 +47,43 @@ const addToRoom = async (data: any, io: Server, socket: Socket) => {
   socket.broadcast.to(chat_id).emit("addToRoom", user);
 };
 
+
 const removeFromRoom = async (
   data: any,
   io: Server,
   socket: Socket,
-  users: Map<string, Socket>
+  users: Map<string, Socket>,
 ) => {
-  const { chat_id, user_id } = data;
-  const chat = await Dal.chatRep.getById(chat_id);
-  const user = await Dal.userRep.getById(user_id);
-
-  chat.participants = chat.participants.filter(
-    (p) => p._id.toString() !== user._id.toString()
-  );
-  chat.admins = chat.admins.filter(
-    (p) => p._id.toString() !== user._id.toString()
-  );
-  user.chats = user.chats.filter(
-    (c) => c._id.toString() !== chat._id.toString()
-  );
-
-  await Dal.chatRep.update(chat._id, chat);
-  await Dal.userRep.update(user._id, user);
-  socket.broadcast.to(chat_id).emit("removeFromRoom", { user, chat });
-  const userSocket = users.get(user_id);
-  userSocket?.leave(chat_id);
+  console.log("Token in removeFromRoom: ", data.token);
+  const isValidToken = await Dal.userRep.isValidToken(data.token);
+  console.log("isValidToken: ", isValidToken);
+  if(isValidToken)
+  {
+    const { chat_id, user_id } = data;
+    const chat = await Dal.chatRep.getById(chat_id);
+    const user = await Dal.userRep.getById(user_id);
+  
+    chat.participants = chat.participants.filter(
+      (p) => p._id.toString() !== user._id.toString()                 //WIP with token
+    );
+    chat.admins = chat.admins.filter(
+      (p) => p._id.toString() !== user._id.toString()
+    );
+    user.chats = user.chats.filter(
+      (c) => c._id.toString() !== chat._id.toString()
+    );
+  
+    await Dal.chatRep.update(chat._id, chat);
+    await Dal.userRep.update(user._id, user);
+    socket.broadcast.to(chat_id).emit("removeFromRoom", { user, chat });
+    const userSocket = users.get(user_id);
+    userSocket?.leave(chat_id);
+  }
+  else{
+    console.log("removeFromRoom failed: Token is invalid")
+  }
 };
+
 
 const createChat = async (
   data: any,
@@ -80,17 +91,26 @@ const createChat = async (
   socket: Socket,
   users: Map<string, Socket>
 ) => {
-  const newChat = new Chat({ ...data });
-  await Dal.chatRep.add(newChat);
-  newChat.participants.forEach(async (p) => {
-    const user = await Dal.userRep.getById(p._id);
-    user.chats.push(newChat);
-    await Dal.userRep.update(user._id, user);
-  });
-  newChat.participants.forEach(async (u) => {
-    const pSocket = users.get(u._id.toString());
-    pSocket?.emit("newChat", newChat);
-  });
+  console.log("Token in removeFromRoom: ", data.token);
+  const isValidToken = await Dal.userRep.isValidToken(data.token);
+  console.log("isValidToken: ", isValidToken);
+  if(isValidToken)
+  {
+      const newChat = new Chat({ ...data.chat });
+    await Dal.chatRep.add(newChat);
+    newChat.participants.forEach(async (p) => {
+      const user = await Dal.userRep.getById(p._id);
+      user.chats.push(newChat);
+      await Dal.userRep.update(user._id, user);
+    });
+    newChat.participants.forEach(async (u) => {
+      const pSocket = users.get(u._id.toString());
+      pSocket?.emit("newChat", newChat);
+    });
+  } 
+  else {
+    console.log("createChat failed: Token is invalid")
+  }
 };
 
 const updateChat = async (
@@ -99,9 +119,13 @@ const updateChat = async (
   socket: Socket,
   users: Map<string, Socket>
 ) => {
-  const Chat = await Dal.chatRep.getById(data._id);
-  Chat.participants.forEach(async (p) => {
-    if (!data.participants.includes(p._id.toString())) {
+  const isValidToken = await Dal.userRep.isValidToken(data.token);
+
+  if(isValidToken)
+  {
+    const Chat = await Dal.chatRep.getById(data.chat._id);
+    Chat.participants.forEach(async (p) => {
+    if (!data.chat.participants.includes(p._id.toString())) {
       const user = await Dal.userRep.getById(p._id);
       Chat.participants = Chat.participants.filter(
         (p) => p._id.toString() !== user._id.toString()
@@ -117,12 +141,27 @@ const updateChat = async (
       userSocket?.leave(Chat._id);
       userSocket?.emit('removeFromRoom',{chat:Chat, user:user})
     }
+    });
+  data.chat.participants?.forEach(async (p) => {
+    if(!Chat.participants.find(participant => participant._id.toString() === p)){
+      const addedParticipant = await Dal.userRep.getById(p);
+      addedParticipant?.chats?.push(Chat);
+      Chat.participants?.push(addedParticipant);
+      await Dal.userRep.update(addedParticipant._id,addedParticipant);
+    }
   });
-  Chat.name = data.name
-  Chat.description = data.description;
-  await Dal.chatRep.update(Chat._id, Chat);
+    if(data.chat.imageUrl){
+      Chat.imageUrl = data.chat.imageUrl;
+      io.emit("chatImageUpdated", {chatId: data.chat._id, newImageUrl: data.chat.imageUrl});
+    }
+  
+    Chat.name = data.chat.name
+    Chat.description = data.chat.description;
+    await Dal.chatRep.update(Chat._id, Chat);
 
-  socket.broadcast.to(data._id).emit("updateChat", Chat);
+    socket.broadcast.to(data.chat._id).emit("updateChat", Chat);
+  }
+  
 };
 
 const chatEvents = {

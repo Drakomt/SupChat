@@ -1,32 +1,41 @@
 import { LayoutLine } from "../Line/Line";
 import { SideBar } from "../../Components/SideBar/SideBar";
 import { ChatArea } from "../../Components/ChatArea/ChatArea";
-import { Button } from "../../Components/Button/Button";
 import { SpeedDialOptions } from "../../Components/Button/SpeedDial/SpeedDialOptions";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import AddIcon from "@mui/icons-material/Add";
+import { ChatInfo } from "../../Components/ChatInfo/ChatInfo";
 import "./MainLayout.css";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
 import { AddChat } from "../../../pages/addChat";
 import { connectSocket, disconnectSocket } from "../../../services/socket";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import { logOut ,fetchUser} from "../../../store/userSlice";
-
-import { ChatInfo } from "../../Components/ChatInfo/ChatInfo";
 import { Profile } from "../../../pages/profile";
+import { UserInfo } from "../../Components/UserInfo/UserInfo";
+import { Button } from "../../Components/Button/Button";
+import { setViewChat, setIsMobile, setIsChatVisible, setIsInfoVisible } from "../../../store/chatDisplaySlice";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { setDisplayChat } from "../../../store/displaySlice";
+
+const BackButton = ({ onClick }) => (
+  <Button className={"back"} onClick={onClick}>
+    <ArrowBackIcon/>
+  </Button>
+);
 
 export const MainLayout = () => {
-  const [view, setView] = useState('sidebar');
-  //const [addChatForm, setAddChatForm] = useState(false);
+  //const [view, setView] = useState('sidebar');
+  //const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userSlice.user);
-  const doDisplay = useSelector((state) => state.chatDisplaySlice.doDisplay);
-  console.log('do display:', doDisplay)
+  const display = useSelector((state) => state.displaySlice.display);
   const selectedChat = useSelector((state) => state.userSlice.selectedChat);
+  const viewChat = useSelector((state) => state.chatDisplaySlice.viewChat);
+  const isMobile = useSelector((state) => state.chatDisplaySlice.isMobile);
+  const isChatVisible = useSelector((state) => state.chatDisplaySlice.isChatVisible);
+  const isInfoVisible = useSelector((state) => state.chatDisplaySlice.isInfoVisible);
+
   useEffect(() => {
     if (user) {
       connectSocket(user);
@@ -48,15 +57,57 @@ export const MainLayout = () => {
     }
   }, [navigate, dispatch]);
 
+  const handleSetView = (view) => {
+    dispatch(setViewChat(view));
+  };
 
+  const onClickBack = () => {
+    dispatch(setViewChat("sidebar"));
+    dispatch(setIsChatVisible(false));
+    dispatch(setIsInfoVisible(false));
+  }
+
+  const handleResize = () => {
+    const isMobileNow = window.innerWidth <= 768;
+    dispatch(setIsMobile(isMobileNow));
+    if (isChatVisible && isMobileNow) {
+      dispatch(setViewChat("chat"));
+    } else {
+      dispatch(setViewChat("sidebar"));
+    }
+  };
+
+  useEffect(() => {
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  },[dispatch]);
+
+  // console.log(isChatVisible)
+  // console.log(isInfoVisible)
+  // console.log(isMobile)
+  // console.log(viewChat)
+  // console.log(display)
   return (
     <div className="MainLayout">
-      <SpeedDialOptions setView={setView} />
+      {(isChatVisible || isInfoVisible) && isMobile && (viewChat === "chat" || viewChat === "chatInfo") ? (
+        <BackButton onClick={onClickBack} />
+      ) : (
+        <SpeedDialOptions setView={handleSetView} />
+      )}
+      {/* <SpeedDialOptions setView={handleSetView} /> */}
       <LayoutLine>
-        {view === "chat" && <AddChat closeCb={() => setView("sidebar")} />}
-        {view === "sidebar" && <SideBar />}
-        {view === "profile" && <Profile user={user}/>}
-        {doDisplay ? <ChatInfo chat={selectedChat} /> : <ChatArea />}
+        {viewChat === "addChat" && (
+          <AddChat closeCb={() => dispatch(setViewChat("sidebar"))} />
+        )}
+        {(!isChatVisible || !isMobile) && viewChat === "sidebar" && <SideBar />}
+        {viewChat === "profile" && <Profile user={user} />}
+        {isInfoVisible && display === "chatInfo" && selectedChat && (
+          <ChatInfo chat={selectedChat} />
+        )}
+        {isChatVisible && display === "chat" && selectedChat && <ChatArea chat={selectedChat}/>}
+        {display === "userInfo" && <UserInfo />}
       </LayoutLine>
     </div>
   );

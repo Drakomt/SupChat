@@ -19,33 +19,39 @@ export const SideBarDisplaySlice = createSlice({
     isLoading: false,
     error: null,
     users: [],
+    reFetch: false
   },
   reducers: {
     updateDisplayParams(state, action) {
       //console.log("updating params", action);
       state.cardType = action.payload.cardType;
       state.data = action.payload.data;
+      state.reFetch = false;
     },
+    setReFetch(state, action){
+      state.reFetch = action.payload;
+    }
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUsers.pending, (state) => {
-        state.loading = true;
+        state.isLoading = true;
         state.error = null;
+        state.reFetch = true;
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
-        state.loading = false;
+        state.isLoading = false;
         state.data = action.payload;
         state.cardType = "UserCard";
         state.users = action.payload;
         state.error = null;
       })
       .addCase(fetchUsers.rejected, (state, action) => {
-        state.loading = false;
+        state.isLoading = false;
         state.error = action.payload.error.message;
       });
   },
 });
 
 export const SideBarDisplayReducer = SideBarDisplaySlice.reducer;
-export const { updateDisplayParams } = SideBarDisplaySlice.actions;
+export const { updateDisplayParams,setIsSideBarVisible } = SideBarDisplaySlice.actions;

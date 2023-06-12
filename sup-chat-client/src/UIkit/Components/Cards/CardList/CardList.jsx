@@ -20,7 +20,7 @@ export const CardList = ({items, cardType}) => {
     //     {items?.map((item) => <Fragment key={item._id}> <Card {...item} /> </Fragment> )}
     //   </Rows>
     // </div>
-    <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}>
+    <List sx={{width: '100%', maxWidth: "100%", bgcolor: 'background.paper'}}>
       {items?.map((item,index) => (
         <Fragment key={item._id}>
           <Card {...item} />
