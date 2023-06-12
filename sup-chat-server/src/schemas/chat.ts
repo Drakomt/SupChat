@@ -9,6 +9,8 @@ export interface IChat extends Document {
   admins: IUser[];
   name: string;
   description: string;
+  createdAt:{type:Date},
+  imageUrl: string;
 }
 
 /* // Define the schema

@@ -31,28 +31,6 @@
     align-items: center;
 }
 
-/* .rightSection {
-    flex: 5;
-    background-image: url("assets/images/bg.png");
-    background-repeat: no-repeat;
-    background-size: cover;
-    justify-content: center;
-    align-items: center;
-} */
-
-/* .logo {
-    height: 45px;
-    width: 45px;
-    vertical-align: baseline;
-} */
-
-/* .backgroundTitle {
-    color: white;
-    margin: 0;
-    text-align: center;
-    padding-top: 4px;
-} */
-
 .formRoot>*{
     background-color: var(--primary);
     /* border: 2px solid black; */

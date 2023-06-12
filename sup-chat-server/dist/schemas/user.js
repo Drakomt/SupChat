@@ -7,6 +7,7 @@ const UserSchema = new Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     imageUrl: { type: String },
+    createdAt: { type: Date },
 });
 // Define and export the model
 export const User = mongoose.model('User', UserSchema);

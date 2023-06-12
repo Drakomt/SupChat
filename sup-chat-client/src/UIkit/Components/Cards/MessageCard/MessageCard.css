@@ -3,3 +3,9 @@
     border-radius: 15px;
     background-color: aqua;
 }
+
+.messageContent {
+    word-wrap: break-word;
+    max-width: 60%;
+    text-align: start;
+}

@@ -2,13 +2,15 @@ import React,{ useState,useEffect, useRef, useCallback } from "react"
 import { MessageCard } from "../Cards/MessageCard/MessageCard"
 import { useSelector } from "react-redux";
 import "./MessageList.css";
-import { FixedSizeList } from "react-window";
+import { FixedSizeList, VariableSizeList } from "react-window";
 
 export const MessageList = ({messages}) => {
     const user = useSelector(state => state.userSlice.user);
     const [displayMessages, setDisplayMessages] = useState([]);
     const [listHeight, setListHeight] = useState(window.innerHeight * 0.68);
     const listRef = useRef();
+    const rowHeights = useRef({});
+    const getItemSize = useCallback((index) => rowHeights.current[index] || 65, []);
 
     const loadMoreMessages = useCallback(() => {
       if(displayMessages.length >= messages.length) return;
@@ -45,13 +47,21 @@ export const MessageList = ({messages}) => {
 
     const MessageCardRow = ({ index, style }) => {
       const message = displayMessages[index];
+      const ref = useRef();
+      const handleHeightReady = (height) => {
+        rowHeights.current[index] = height;
+        listRef.current.resetAfterIndex(index);
+      }
+
       return (
-        <div style={style}>
+        <div style={style}>  
           <MessageCard
+            ref={ref}
             message={message}
             className={
               message.user._id === user._id ? "mymessage" : "othermessage"
             }
+            onHeightReady={handleHeightReady}
           />
         </div>
       );
@@ -59,16 +69,16 @@ export const MessageList = ({messages}) => {
 
     return (
       <div className="messageList">
-        <FixedSizeList
+        <VariableSizeList
           height={listHeight}
-          itemCount={displayMessages.length}
-          itemSize={65}
+          itemCount={displayMessages.length} 
+          itemSize={getItemSize}
           width={"100%"}
           ref={listRef}
-          onItemsRendered={handleItemRendered }
-          >
+          onItemsRendered={handleItemRendered}
+        >
           {MessageCardRow}
-        </FixedSizeList>
+        </VariableSizeList>
       </div>
     );
 }
