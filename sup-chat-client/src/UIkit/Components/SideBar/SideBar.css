@@ -1,5 +1,5 @@
 .sideBar{
-    padding: 0px 3px;
+    /* padding: 0px 3px; */
     border-right: 2px solid black;
     box-sizing: border-box;
     overflow-y: auto;
@@ -9,6 +9,19 @@
     height: 10%;
 }
 
+.sideBar>.Line{
+    gap: 0;
+}
+
 .logout{
-    width:25%;
+    margin: 5px 1px;
+    width:20%;
+}
+
+.sticky {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: aqua;
+    padding: 5px;
 }

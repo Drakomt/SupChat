@@ -4,7 +4,7 @@ import "./PrivateChatCard.css";
 import { useDispatch, useSelector } from "react-redux";
 import { selectNewMessageCount, setSelectedChat, viewChat } from "../../../../../store/userSlice";
 import { useEffect, useState } from "react";
-import { resetParticipants, setDisplay } from "../../../../../store/chatDisplaySlice";
+import { resetParticipants, setDisplay, setIsChatVisible, setIsUserInfoVisible, setViewChat } from "../../../../../store/chatDisplaySlice";
 import { DropDown } from "../../../DropDown/DropDown";
 import { ConfirmDialog } from "../../../ConfirmDialog/ConfirmDialog";
 import { removeSelfFromChatRoom } from "../../../../../services/socket";
@@ -21,10 +21,11 @@ export const PrivateChatCard = ({chat, key}) => {
   const timeStr = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false,});
   const options = ["details"];
   const newMessages = useSelector(state => selectNewMessageCount(state,chat));
-
+  const isMobile = useSelector((state) => state.chatDisplaySlice.isMobile);
   const user_id = useSelector(state => state.userSlice.user._id);
   const otherUser = chat.participants.filter(user => user._id !== user_id)[0];
 
+  // console.log(newMessages)
   useEffect(() => {
     let typingInterval;
     if (isTyping) {
@@ -43,10 +44,18 @@ export const PrivateChatCard = ({chat, key}) => {
     dispatch(setSelectedChat(chat));
     dispatch(resetParticipants());
     dispatch(viewUserInfo(otherUser));
+    dispatch(setIsUserInfoVisible(true));
+    if(isMobile) {
+      dispatch(setViewChat("userInfo"));
+    }
   };
   const onClick = () => {
     dispatch(setSelectedChat(chat));
     dispatch(viewChatMessages(chat));
+    dispatch(setIsChatVisible(true));
+    if(isMobile){
+      dispatch(setViewChat("chat"));
+    }
   };
   const shorter = (item) => {
     return item.length > 15 ? item.substring(0, 15) + "..." : item

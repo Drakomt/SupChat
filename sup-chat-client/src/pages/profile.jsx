@@ -7,6 +7,7 @@ import {
   Divider,
   TextField,
   Typography,
+  Badge,
 } from "@mui/material";
 import EmailIcon from "@mui/icons-material/Email";
 import { Button } from "../UIkit/Components/Button/Button";
@@ -79,30 +80,29 @@ export const Profile = ({ user }) => {
   }, [user._id, dispatch]);
 
   return (
-    <div
-      className="profile"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        minWidth: "300px",
-        // paddingTop:"100px",
-      }}
-    >
-      <Avatar
-        alt={username}
-        src={`http://localhost:8080${user.imageUrl}`}
-        style={{ height: "100px", width: "100px" }}
-      />
-      <ListItem>
+    <div className="profile">
+      <Badge
+        color="secondary"
+        style={{ fontSize: 40 }}
+        badgeContent={<CollectionsIcon />}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        onClick={handleFileInput}
+      >
+        <Avatar
+          alt={username}
+          src={`http://localhost:8080${user.imageUrl}`}
+          style={{ height: "100px", width: "100px" }}
+        />
+        <FileInput className={"file"} forwardedref={fileInput} onTextChange={handleChange}/>
+      </Badge>
+      {/* <ListItem>
         <CollectionsIcon style={{ fontSize: 40 }} onClick={handleFileInput} />
         <FileInput
           className={"file"}
           forwardedref={fileInput}
           onTextChange={handleChange}
         />
-      </ListItem>
+      </ListItem> */}
       <ListItem>
         <ListItemAvatar>
           <Avatar />
@@ -123,7 +123,7 @@ export const Profile = ({ user }) => {
           }
         />
       </ListItem>
-      <Divider variant="inset" component="li" />
+      {/* <Divider variant="inset" component="li" /> */}
       <ListItem>
         <ListItemAvatar>
           <EmailIcon />

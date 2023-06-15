@@ -73,9 +73,9 @@ export const userSlice = createSlice({
       state.selectedChat = state.user.chats.find(
         (chat) => chat._id === action.payload._id
       );
-      if (state.selectedChat && !state.selectedChat.typingUsers) {
-        state.selectedChat.typingUsers = [];
-      }
+      // if (state.selectedChat && !state.selectedChat.typingUsers) {
+      //   state.selectedChat.typingUsers = [];
+      // }
       console.log("new active chat: ", action.payload);
     },
     sendMessage(state, action) {
@@ -97,8 +97,8 @@ export const userSlice = createSlice({
       if (!chat.typingUsers) {
         chat.typingUsers = [];
       }
-      if (!state.selectedChat) {
-        state.selectedChat = chat;
+      if (!state.selectedChat || chat._id === state.selectedChat._id) {
+        state.selectedChat = {...chat};
       }
     },
     leaveChat(state, action) {
@@ -144,6 +144,7 @@ export const userSlice = createSlice({
     updateUser(state, action) {
       state.user.email = action.payload.email;
       state.user.username = action.payload.username;
+      state.user.imageUrl = action.payload.imageUrl;
     },
     typing(state, action) {
       const chat = state.user.chats.find(
@@ -188,6 +189,7 @@ export const userSlice = createSlice({
       .addCase(fetchUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
+        state.user.chats.forEach(chat => chat.typingUsers = []);
         localStorage.setItem("token", action.payload.token);
         state.token = action.payload.token;
         state.isLoggedIn = true;

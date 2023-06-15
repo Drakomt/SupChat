@@ -93,5 +93,18 @@ export class UserRepository extends Repository {
             next();
         });
     }
+    async isValidToken(token) {
+        return new Promise((resolve, reject) => {
+            jwt.verify(token, "mySecretKey", (error) => {
+                if (error) {
+                    console.log("******************* Error in verify Token: ", token, " *******************");
+                    resolve(false); // Token verification failed
+                }
+                else {
+                    resolve(true); // Token verification succeeded
+                }
+            });
+        });
+    }
 }
 //# sourceMappingURL=userRepository.js.map

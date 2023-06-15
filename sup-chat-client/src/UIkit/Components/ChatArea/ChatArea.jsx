@@ -7,9 +7,7 @@ import { Button } from "../Button/Button";
 import { sendMessage } from "../../../store/userSlice";
 import { MessageList } from "../MessageList/MessageList";
 import SendIcon from "@mui/icons-material/Send";
-import socket, {
-  connectSocket,
-  disconnectSocket,
+import {
   emitMessage,
   emitTyping,
   emitStopTyping,
@@ -18,12 +16,12 @@ import socket, {
 //import "emoji-mart/css/emoji-mart.css";
 import "./ChatArea.css";
 
-export const ChatArea = () => {
+export const ChatArea = ({chat}) => {
   let typingTimeoutRef = useRef(null);
   const dispatch = useDispatch();
-  const chat = useSelector((state) => state.userSlice.selectedChat) || {
-    messages: [],
-  };
+  // const chat = useSelector((state) => state.userSlice.selectedChat) || {
+  //   messages: [],
+  // };
   const messages = useSelector(
     (state) => state.userSlice.selectedChat?.messages
   );
@@ -71,14 +69,6 @@ export const ChatArea = () => {
           }
         }
     }, []);
-
-    if (!chat || !chat._id) {
-      return (
-        <div className="chatArea">
-          <p>Please select a chat to start messaging.</p>
-        </div>
-      );
-    }
 
     return (
       <div className="chatArea">

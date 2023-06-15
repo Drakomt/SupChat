@@ -25,6 +25,14 @@
     /* border: 1px solid black; */
 }
 
+.profile{
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    flex-direction: column;
+    min-width: 300px;
+}
+
 .sideBar,.profile,.addChatForm {
     height: 100%;
     width: 100%;

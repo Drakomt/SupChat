@@ -4,56 +4,60 @@ export const fetchUserList = createAsyncThunk("chatDisplaySlice/fetchParticipant
 export const chatDisplaySlice = createSlice({
   name: "chatDisplaySlice",
   initialState: {
-    doDisplay:false,
-    participantList:[],
-    error:null,
-    isLoading:false,
-    viewChat: 'sidebar',
+    doDisplay: false,
+    participantList: [],
+    error: null,
+    isLoading: false,
+    viewChat: "sidebar",
     isMobile: window.innerWidth <= 768,
     isChatVisible: false,
     isInfoVisible: false,
+    isUserInfoVisible: false,
   },
   reducers: {
     setDisplay(state, action) {
       state.doDisplay = action.payload;
     },
-    setViewChat(state,action) {
+    setViewChat(state, action) {
       state.viewChat = action.payload;
     },
-    setIsMobile(state,action){
+    setIsMobile(state, action) {
       state.isMobile = action.payload;
     },
-    setIsChatVisible(state,action){
+    setIsChatVisible(state, action) {
       state.isChatVisible = action.payload;
     },
-    setIsInfoVisible(state,action){
+    setIsInfoVisible(state, action) {
       state.isInfoVisible = action.payload;
     },
-    resetParticipants(state, action){
+    setIsUserInfoVisible(state, action) {
+      state.isUserInfoVisible = action.payload;
+    },
+    resetParticipants(state, action) {
       state.error = null;
       state.isLoading = false;
       state.participantList = [];
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserList.pending, (state) => {
-        console.log('waithing for user list...');
+        console.log("waithing for user list...");
         state.error = null;
         state.isLoading = true;
       })
       .addCase(fetchUserList.fulfilled, (state, action) => {
-        console.log('user list found ! ', action.payload);
+        console.log("user list found ! ", action.payload);
         state.isLoading = false;
         state.participantList = action.payload;
         state.error = null;
       })
       .addCase(fetchUserList.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = 'An eror occured';
-      })
-  }
+        state.error = "An eror occured";
+      });
+  },
 });
 
 export const chatDisplayreucer = chatDisplaySlice.reducer;
-export const { setDisplay,resetParticipants, setViewChat, setIsMobile,setIsChatVisible,setIsInfoVisible } = chatDisplaySlice.actions;
+export const { setDisplay,resetParticipants, setViewChat, setIsMobile,setIsChatVisible,setIsInfoVisible,setIsUserInfoVisible } = chatDisplaySlice.actions;

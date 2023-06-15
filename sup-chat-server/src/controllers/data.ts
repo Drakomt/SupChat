@@ -42,6 +42,19 @@ export const fetchNonFriendUsers = async (req, res) => {
   }
 };
 
+export const fetchPrivateChat = async (req, res) => {
+  const { user1Id,user2Id } = req.query;
+  try {
+    const chat = await Chat.findOne({
+      name: 'private chat',
+      participants: { $all: [ user1Id, user2Id ] },
+    });
+    res.status(200).json(chat);
+  } catch (error) {
+    res.status(500).json({ error: "An error occured while fetching the chat."});
+  }
+}
+
 export const findUserList = async (req, res) =>{
   try{
     const usersIds = req.body

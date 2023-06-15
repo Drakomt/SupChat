@@ -5,4 +5,5 @@ export interface IUserRepository extends IRepository<IUser> {
     findByEmail(email:string);
     findById(id: string);
     verifyToken(request, response, next);
+    isValidToken(token: string);
 }

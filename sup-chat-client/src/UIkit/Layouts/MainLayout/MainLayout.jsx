@@ -13,7 +13,7 @@ import { logOut ,fetchUser} from "../../../store/userSlice";
 import { Profile } from "../../../pages/profile";
 import { UserInfo } from "../../Components/UserInfo/UserInfo";
 import { Button } from "../../Components/Button/Button";
-import { setViewChat, setIsMobile, setIsChatVisible, setIsInfoVisible } from "../../../store/chatDisplaySlice";
+import { setViewChat, setIsMobile, setIsChatVisible, setIsInfoVisible, setIsUserInfoVisible } from "../../../store/chatDisplaySlice";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { setDisplayChat } from "../../../store/displaySlice";
 
@@ -21,6 +21,12 @@ const BackButton = ({ onClick }) => (
   <Button className={"back"} onClick={onClick}>
     <ArrowBackIcon/>
   </Button>
+);
+
+const DefaultChatArea = () => (
+  <div className="chatArea">
+    <p>Please select a chat to start messaging.</p>
+  </div>
 );
 
 export const MainLayout = () => {
@@ -35,6 +41,7 @@ export const MainLayout = () => {
   const isMobile = useSelector((state) => state.chatDisplaySlice.isMobile);
   const isChatVisible = useSelector((state) => state.chatDisplaySlice.isChatVisible);
   const isInfoVisible = useSelector((state) => state.chatDisplaySlice.isInfoVisible);
+  const isUserInfoVisible = useSelector((state) => state.chatDisplaySlice.isUserInfoVisible);
 
   useEffect(() => {
     if (user) {
@@ -43,7 +50,7 @@ export const MainLayout = () => {
     return () => {
       disconnectSocket();
     };
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -65,6 +72,7 @@ export const MainLayout = () => {
     dispatch(setViewChat("sidebar"));
     dispatch(setIsChatVisible(false));
     dispatch(setIsInfoVisible(false));
+    dispatch(setIsUserInfoVisible(false));
   }
 
   const handleResize = () => {
@@ -84,30 +92,31 @@ export const MainLayout = () => {
     return () => window.removeEventListener("resize", handleResize);
   },[dispatch]);
 
+ 
   // console.log(isChatVisible)
   // console.log(isInfoVisible)
+  // console.log(isUserInfoVisible)
   // console.log(isMobile)
   // console.log(viewChat)
   // console.log(display)
+  // console.log(selectedChat)
   return (
     <div className="MainLayout">
-      {(isChatVisible || isInfoVisible) && isMobile && (viewChat === "chat" || viewChat === "chatInfo") ? (
+      {(isChatVisible || isInfoVisible || isUserInfoVisible) &&
+       isMobile && (viewChat === "chat" || viewChat === "chatInfo" || viewChat === "userInfo") ? (
         <BackButton onClick={onClickBack} />
       ) : (
         <SpeedDialOptions setView={handleSetView} />
       )}
       {/* <SpeedDialOptions setView={handleSetView} /> */}
       <LayoutLine>
-        {viewChat === "addChat" && (
-          <AddChat closeCb={() => dispatch(setViewChat("sidebar"))} />
-        )}
+        {viewChat === "addChat" && (<AddChat closeCb={() => dispatch(setViewChat("sidebar"))} />)}
         {(!isChatVisible || !isMobile) && viewChat === "sidebar" && <SideBar />}
         {viewChat === "profile" && <Profile user={user} />}
-        {isInfoVisible && display === "chatInfo" && selectedChat && (
-          <ChatInfo chat={selectedChat} />
-        )}
-        {isChatVisible && display === "chat" && selectedChat && <ChatArea />}
-        {display === "userInfo" && <UserInfo />}
+        {isInfoVisible && display === "chatInfo" && selectedChat && (<ChatInfo chat={selectedChat} />)}
+        {!isChatVisible && !isMobile && <DefaultChatArea/>}
+        {isChatVisible && display === "chat" && selectedChat && <ChatArea chat={selectedChat}/>}
+        {isUserInfoVisible && display === "userInfo" && <UserInfo />}
       </LayoutLine>
     </div>
   );

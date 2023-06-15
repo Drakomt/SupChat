@@ -100,13 +100,13 @@ export const uploadUserImage = async (req, res) => {
     }
     // Delete the existing image file if one exists
     if (user.imageUrl) {
-        const oldImagePath = path.join(process.cwd(), "..", "..", "public", "images", "Users", path.basename(user.imageUrl));
+        const oldImagePath = path.join(process.cwd(), "..", "..", "public", "images", "users", path.basename(user.imageUrl));
         fs.unlink(oldImagePath, (err) => {
             if (err)
                 console.log(err);
         });
     }
-    const imageUrl = `/images/chats/${req.file.filename}`;
+    const imageUrl = `/images/users/${req.file.filename}`;
     const updatedUser = await User.findByIdAndUpdate(userId, { imageUrl }, { new: true });
     if (!updatedUser) {
         return res.status(404).json({ error: 'User not found' });

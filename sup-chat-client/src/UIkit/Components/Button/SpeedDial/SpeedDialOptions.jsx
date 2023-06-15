@@ -29,7 +29,7 @@ export const SpeedDialOptions = ({ setView }) => {
         open={open}
         onOpen={handleOpen}
         onClose={handleClose}
-        sx={{ position: "absolute", bottom: "3%", left: "3%" }}
+        sx={{ position: "absolute", bottom: "5%", left: "5%" }}
         icon={<SpeedDialIcon/>}
       >
         {actions.map((action) => (

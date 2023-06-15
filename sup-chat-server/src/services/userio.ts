@@ -11,14 +11,19 @@ const updateUser = async (
     socket: Socket,
     users: Map<string, Socket>
   ) => {
-    const user = await Dal.userRep.findById(data._id);
-    user.email = data.email;
-    user.username = data.username;
-    await Dal.userRep.update(user._id,user);
-    user.friends.forEach(friend => {
-        const pSocket = users.get(friend._id.toString());
-        pSocket?.emit("updateUser", user);
-    });
+    const isValidToken = await Dal.userRep.isValidToken(data.token);
+
+    if(isValidToken)
+    {
+      const user = await Dal.userRep.findById(data.user._id);
+      user.email = data.user.email;
+      user.username = data.user.username;
+      await Dal.userRep.update(user._id,user);
+      user.friends.forEach(friend => {
+          const pSocket = users.get(friend._id.toString());
+          pSocket?.emit("updateUser", user);
+      }); 
+    }
   }
 
 

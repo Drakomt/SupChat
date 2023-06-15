@@ -6,10 +6,11 @@ import { useState } from "react";
 import { SideBarDropDown } from "./SideBarDropDown/SideBarDropDown";
 import { useDispatch, useSelector } from "react-redux";
 import { Saparate } from "../../Layouts/Line/Line";
-import "./SideBar.css";
 import { logOut } from "../../../store/userSlice";
 import { Button } from "../Button/Button";
 import { fetchUsers } from "../../../store/sideBarDisplaySlice";
+import LogoutIcon from "@mui/icons-material/Logout";
+import "./SideBar.css";
 
 const hasTerm = (string, subString) => {
   return string.toUpperCase().includes(subString.toUpperCase());
@@ -94,13 +95,13 @@ export const SideBar = () => {
   return (
     <div className="sideBar">
       <Rows>
-        <Saparate>
-          <SideBarDropDown searchTerm={searchTerm}/>
-          <Button onClick={logoutButtonClick} className={"logout"}>
-            Logout
-          </Button>
-        </Saparate>
-        <SearchBar onSearch={onSearch} />
+          <Saparate sticky>
+            <SideBarDropDown searchTerm={searchTerm}/>
+            <Button onClick={logoutButtonClick} className={"logout"}>
+              <LogoutIcon/>
+            </Button>
+          </Saparate>
+          <SearchBar onSearch={onSearch} className={"sticky"}/>
         {!isLoading && !error && (
           <CardList items={data ? filteredList : data} cardType={cardType} />
         )}

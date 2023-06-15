@@ -12,6 +12,9 @@ export async function customFetch(url, method, data){
           },  
         });
         return response.data;
+    } else if (method === "GET"){
+        const resp = await axios.get(`${baseUrl}/${url}`, {params: data});
+        return resp.data;
     } else {
         const  resp = await axios({
                 method,

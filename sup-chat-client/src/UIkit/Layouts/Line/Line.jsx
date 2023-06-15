@@ -13,8 +13,10 @@ export const LayoutLine = (props) => {
 }
 
 export const Saparate = (props) => {
+    const {sticky} = props;
+    const stickyClass = sticky ? "sticky" : "";
     return (
-        <Line {...props} addClass={'Saparate'}></Line>
+        <Line {...props} addClass={`Saparate ${stickyClass}`}></Line>
     )
 }
 
