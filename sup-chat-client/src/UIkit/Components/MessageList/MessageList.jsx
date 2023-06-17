@@ -48,6 +48,7 @@ export const MessageList = ({messages}) => {
     const MessageCardRow = ({ index, style }) => {
       const message = displayMessages[index];
       const ref = useRef();
+
       const handleHeightReady = (height) => {
         rowHeights.current[index] = height;
         listRef.current.resetAfterIndex(index);

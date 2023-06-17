@@ -1,4 +1,5 @@
 import { Sup } from "../repository/Sup.js";
+import { Chat } from "../schemas/chat.js";
 import { Message } from "../schemas/message.js";
 const Dal = new Sup();
 export async function addMessage(request, response) {
@@ -17,4 +18,25 @@ export async function addMessage(request, response) {
     Dal.chatRep.update(Chat._id, Chat);
     response.status(201).send('message sent to server');
 }
+export const uploadMessageImage = async (req, res) => {
+    if (!req.file) {
+        res.status(400).json({ error: 'No file uploaded' });
+    }
+    const chatId = req.params.id;
+    const chat = await Chat.findById(chatId);
+    if (!chat) {
+        res.status(404).json({ error: 'Chat not found' });
+    }
+    const imageUrl = `/images/messages/${req.file.filename}`;
+    const newMessage = new Message({
+        text: "",
+        image: imageUrl,
+        dateTime: Date.now(),
+        user: req.body.user,
+    });
+    const savedMessage = await newMessage.save();
+    chat.messages.push(savedMessage._id);
+    await chat.save();
+    return res.status(200).json({ message: savedMessage });
+};
 //# sourceMappingURL=msg.js.map

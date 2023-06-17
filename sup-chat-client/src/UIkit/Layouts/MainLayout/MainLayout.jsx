@@ -114,7 +114,7 @@ export const MainLayout = () => {
         {(!isChatVisible || !isMobile) && viewChat === "sidebar" && <SideBar />}
         {viewChat === "profile" && <Profile user={user} />}
         {isInfoVisible && display === "chatInfo" && selectedChat && (<ChatInfo chat={selectedChat} />)}
-        {!isChatVisible && !isMobile && <DefaultChatArea/>}
+        {!isInfoVisible && !isUserInfoVisible && !isChatVisible && !isMobile && <DefaultChatArea/>}
         {isChatVisible && display === "chat" && selectedChat && <ChatArea chat={selectedChat}/>}
         {isUserInfoVisible && display === "userInfo" && <UserInfo />}
       </LayoutLine>

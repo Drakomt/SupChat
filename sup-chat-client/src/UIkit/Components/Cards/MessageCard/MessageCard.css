@@ -9,3 +9,16 @@
     max-width: 60%;
     text-align: start;
 }
+
+.imageMessage{
+    max-width: 350px;
+    max-height: 350px;
+    border-radius: 15px;
+    padding: 5px;
+}
+
+.mobileImg{
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 10px;
+}

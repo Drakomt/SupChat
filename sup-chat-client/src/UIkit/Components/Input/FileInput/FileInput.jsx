@@ -1,6 +1,6 @@
-import { useCallback } from "react";
+import { forwardRef, useCallback } from "react";
 
-export const FileInput = ({ className, forwardedref, onTextChange = (v) => {}}) => {
+export const FileInput = forwardRef(({ className, onTextChange = (v) => {}}, ref) => {
 
     const onChange = useCallback((e) => {
         console.log("file input event",e);
@@ -12,8 +12,9 @@ export const FileInput = ({ className, forwardedref, onTextChange = (v) => {}}) 
             <input
                 type="file"
                 onChange={onChange}
-                ref={forwardedref}
+                ref={ref}
+                accept="image/*"
             />
         </div>
     )
-};
+});

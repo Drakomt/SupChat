@@ -48,7 +48,7 @@
     .profile,
     .addChatForm {
         width: 20%;
-        display: block;
+        /* display: block; */
         min-width: 300px;
     }
 
