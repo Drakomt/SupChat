@@ -19,12 +19,12 @@ export const fetchNonFriendUsers = async (req, res) => {
     try {
         const currentUser = req.body.user;
         const searchTerm = req.body.text;
-        const allUsers = await User.find(User.find({
+        const allUsers = await User.find({
             $or: [
                 { username: { $regex: searchTerm, $options: 'i' } },
                 { email: { $regex: searchTerm, $options: 'i' } }
             ]
-        })).select('_id');
+        }).select('_id');
         const friendIds = currentUser.friends.map((friend) => friend._id.toString());
         const unknownUsersId = allUsers.filter((user) => !friendIds.includes(user._id.toString()) && user._id.toString() !== currentUser._id.toString());
         const unknownUsers = await User.find({

@@ -87,7 +87,7 @@ export const SideBar = () => {
 
   const onSearch = (text) => {
     if(reFetch) { 
-      dispatch(fetchUsers({user, text:text || '..................'}));
+      dispatch(fetchUsers({user:{_id:user._id, friends: user.friends}, text:text || '..................'}));
     }
     setSearchTerm(text);
   }

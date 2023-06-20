@@ -99,9 +99,10 @@ const createChat = async (data, io, socket, users) => {
             user.joinedDict[newChat._id.toString()] = Date.now();
             await Dal.userRep.update(user._id, user);
         });
-        newChat.participants.forEach(async (u) => {
-            const pSocket = users.get(u._id.toString());
-            pSocket?.emit("newChat", newChat);
+        data.chat._id = newChat._id.toString();
+        data.chat.participants.forEach(async (u) => {
+            const pSocket = users.get(u._id);
+            pSocket?.emit("newChat", data.chat);
         });
     }
     else {

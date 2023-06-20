@@ -43,7 +43,6 @@ export const UserCard = (user) => {
             createdAt: Date.now()
           };
           emitNewChat(newChat.current);
-          dispatch(setSelectedChat(newChat.current));
         } else{
           dispatch(setSelectedChat(privateChat))
         }

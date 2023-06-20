@@ -32,7 +32,7 @@ export const ChatArea = ({chat}) => {
   const user = useSelector((state) => state.userSlice.user);
   const [text, setText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const newMessage = { user, text, dateTime: null };
+  const newMessage = { user:{_id:user._id}, text, dateTime: null };
 
   const sendNewMessage = (e) => {
     if (e) e.preventDefault();

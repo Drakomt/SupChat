@@ -69,19 +69,25 @@ export const userSlice = createSlice({
       state.user = { ...state.user };
     },
     addNewChat(state, action) {
-      console.log("added chat:", action.payload);
-      action.payload.typingUsers = [];
-      state.user.chats.push(action.payload);
-      state.selectedChat = action.payload;
+      const newChat = action.payload;
+      console.log("added chat:", newChat);
+      if( !state.user.joinedDict){
+        state.user.joinedDict = {};
+      }
+      state.user.joinedDict[newChat._id] = Date.now();
+      processChat(newChat, state.user.joinedDict)
+      newChat.typingUsers = [];
+      state.user.chats.push(newChat);
+      if(newChat.name === 'private chat' && newChat.participants[0]._id === state.user._id){
+        state.selectedChat = newChat;
+      }
     },
     setSelectedChat(state, action) {
       state.selectedChat = state.user.chats.find(
         (chat) => chat._id === action.payload._id
       );
-      // if (state.selectedChat && !state.selectedChat.typingUsers) {
-      //   state.selectedChat.typingUsers = [];
-      // }
-      console.log("new active chat: ", action.payload);
+      state.selectedChat = {...state.selectedChat}
+      console.log("new active chat: ", state.selectedChat);
     },
     sendMessage(state, action) {
       const selectedChat = state.user.chats.find(
