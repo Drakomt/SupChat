@@ -40,7 +40,8 @@ export const UserCard = (user) => {
             admins:[loggedInUser],
             name:`private chat`,
             description: "",
-            createdAt: Date.now()
+            createdAt: Date.now(),
+            createdBy: user1Id
           };
           emitNewChat(newChat.current);
         } else{
@@ -56,8 +57,8 @@ export const UserCard = (user) => {
     const addContactAction = () =>{
   
     const updatedUser = {
-      ...loggedInUser,
-      friends: [...loggedInUser.friends, user]
+      _id:loggedInUser._id,
+      newFriend: user
     };
     customFetch("addContact", "put", {token: storedToken, user: updatedUser})
     .then((response) => {

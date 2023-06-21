@@ -63,7 +63,7 @@ const removeFromRoom = async (data, io, socket, users) => {
     }
 };
 const createChat = async (data, io, socket, users) => {
-    console.log("Token in removeFromRoom: ", data.token);
+    console.log("Token in crateChat: ", data.token);
     const isValidToken = await Dal.userRep.isValidToken(data.token);
     console.log("isValidToken: ", isValidToken);
     if (isValidToken) {

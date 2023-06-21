@@ -51,13 +51,14 @@ export const MainLayout = () => {
   const isUserInfoVisible = useSelector((state) => state.chatDisplaySlice.isUserInfoVisible);
 
   useEffect(() => {
+    
     if (user) {
       connectSocket(user);
     }
-    return () => {
+    return () =>{
       disconnectSocket();
-    };
-  });
+    }
+  },);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");

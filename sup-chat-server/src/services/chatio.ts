@@ -90,7 +90,7 @@ const createChat = async (
   socket: Socket,
   users: Map<string, Socket>
 ) => {
-  console.log("Token in removeFromRoom: ", data.token);
+  console.log("Token in crateChat: ", data.token);
   const isValidToken = await Dal.userRep.isValidToken(data.token);
   console.log("isValidToken: ", isValidToken);
   if(isValidToken)

@@ -77,7 +77,7 @@ export async function addContact(request, response) {
     console.log("friends: ", request.body.user.friends);
     const updatedUserData = request.body.user;
     const updatedUser = await Dal.userRep.getById(updatedUserData._id);
-    updatedUser.friends = updatedUserData.friends;
+    updatedUser.friends.push(updatedUserData.newFriend);
     await Dal.userRep.update(updatedUser._id, updatedUser);
     console.log("User Updated");
     response.status(202).send("user updated");

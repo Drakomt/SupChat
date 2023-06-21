@@ -11,6 +11,7 @@ import { Button } from "../Button/Button";
 import { fetchUsers } from "../../../store/sideBarDisplaySlice";
 import LogoutIcon from "@mui/icons-material/Logout";
 import "./SideBar.css";
+import { disconnectSocket } from "../../../services/socket";
 
 const hasTerm = (string, subString) => {
   return string.toUpperCase().includes(subString.toUpperCase());
@@ -81,6 +82,7 @@ export const SideBar = () => {
     data && data.filter((item) => filterItem(item, searchTerm));
 
   const logoutButtonClick = () => {
+    disconnectSocket();
     dispatch(logOut());
     navigate("/login");
   };

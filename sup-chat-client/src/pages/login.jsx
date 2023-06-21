@@ -33,6 +33,17 @@ export const Login = () => {
         const formData = new FormData(e.target);
         const email = formData.get('email');
         const password = formData.get('password');
+
+        if (!email) {
+            displayToast("error", "Please enter your email.");
+            return;
+        }
+        
+        if (!password) {
+        displayToast("error", "Please enter your password.");
+        return;
+        }
+
         if (password !== inputData.current.password || email !== inputData.current.email){
             inputData.current.email = email;
             inputData.current.password = password;

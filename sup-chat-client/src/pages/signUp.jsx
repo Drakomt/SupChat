@@ -23,20 +23,30 @@ export const SignUp = () => {
     console.log(isSignedUp, error, loading);
     if(isSignedUp) success();
     const submit = async (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        const email = formData.get('email');
-        const username = formData.get('username')
-        const password = formData.get('password');
-        const confirmPassword = formData.get('confirmPassword');
-        if(password === confirmPassword) {
-            // setInputData({email, password, username});
-            dispatch(createUser({email, password, username}));
-        } else {
-            console.log('passwords do not match !'); 
-            toast("error", 'passwords do not match !');
-        }   
-        
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const email = formData.get('email');
+      const username = formData.get('username')
+      const password = formData.get('password');
+      const confirmPassword = formData.get('confirmPassword');
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email || !username || !password || !confirmPassword) {
+        toast("error", "Please fill in all the fields.");
+        return;
+      }
+
+      if (!emailRegex.test(email)) {
+        toast("error", "Please enter a valid email address.");
+        return;
+      }
+    
+      if (password !== confirmPassword) {
+        toast("error", "Passwords do not match.");
+        return;
+      }
+    
+      dispatch(createUser({ email, password, username }));   
+      
     }
 
    const form = (

@@ -9,6 +9,7 @@ import {
   removeFromChatRoom,
   updateChat,
 } from "../store/userSlice";
+import { setViewChat } from "../store/chatDisplaySlice";
 const URL = require("../URL.json").url;
 const token = localStorage.getItem("token");
 let socket = null;
@@ -38,6 +39,12 @@ const listenToMessages = () => {
 const listenToNewChats = () =>
   socket.on("newChat", (data) => {
     socket.emit("joinRoom", data._id);
+    if (
+      store.getState().chatDisplaySlice.viewChat === "addChat" &&
+      data.createdBy === store.getState().userSlice.user._id
+    ) {
+      store.dispatch(setViewChat("sidebar"));
+    }
     store.dispatch(addNewChat(data));
   });
 export const listenToChatUpdates = () => {
@@ -51,10 +58,11 @@ export const listenToUserRemove = () => {
 };
 
 export const connectSocket = (user) => {
-    socket = io(URL, {
+  socket = io(URL, {
     transports: ["websocket"],
     autoConnect: false,
   });
+  console.log("re connecting socket...");
   if (!socket.connected) {
     const username = user.username;
     socket.auth = { username };
