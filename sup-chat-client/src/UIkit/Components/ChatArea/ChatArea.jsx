@@ -92,6 +92,7 @@ export const ChatArea = ({chat}) => {
         // console.log("upload successful", response);
         if (response && response.message && response.message.image){
           const imageMessage = { ...newMessage, text:'', image: response.message.image, dateTime: Date.now() };
+          console.log(imageMessage)
           dispatch(sendMessage(imageMessage));
           emitMessage(imageMessage, chat);
         } else {

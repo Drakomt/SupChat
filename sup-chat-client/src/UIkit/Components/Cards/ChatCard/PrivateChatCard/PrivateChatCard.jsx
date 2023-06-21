@@ -55,7 +55,7 @@ export const PrivateChatCard = ({chat, key}) => {
     }
   };
   const shorter = (item) => {
-    return item.length > 15 ? item.substring(0, 15) + "..." : item
+    return item && item.length > 15 ? item.substring(0, 15) + "..." : item
   }
   return (<div onClick={onClick} key={key}>
     <ListItem onClick={onClick} key={key} alignItems="flex-start">

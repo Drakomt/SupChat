@@ -19,6 +19,7 @@ const newMessage = async (data: any, io: Server, socket: Socket) => {
   const { message: messageData, chat_id } = data;
   const newMessage = new Message({
     text: messageData.text,
+    // image: messageData.image,
     dateTime: messageData.dateTime,
     user: messageData.user._id,
   });
@@ -46,35 +47,6 @@ const addToRoom = async (data: any, io: Server, socket: Socket) => {
   await Dal.userRep.update(user._id, user);
   socket.broadcast.to(chat_id).emit("addToRoom", user);
 };
-
-// const removeFromRoom = async (
-//   data: any,
-//   io: Server,
-//   socket: Socket,
-//   users: Map<string, Socket>,
-// ) => {
-//   const isValidToken = await Dal.userRep.isValidToken(data.token);
-
-//   const { chat_id, user_id } = data;
-//     const chat = await Dal.chatRep.getById(chat_id);
-//     const user = await Dal.userRep.getById(user_id);
-  
-//     chat.participants = chat.participants.filter(
-//       (p) => p._id.toString() !== user._id.toString()
-//     );
-//     chat.admins = chat.admins.filter(
-//       (p) => p._id.toString() !== user._id.toString()                  //working(old)
-//     );
-//     user.chats = user.chats.filter(
-//       (c) => c._id.toString() !== chat._id.toString()
-//     );
-  
-//     await Dal.chatRep.update(chat._id, chat);
-//     await Dal.userRep.update(user._id, user);
-//     socket.broadcast.to(chat_id).emit("removeFromRoom", { user, chat });
-//     const userSocket = users.get(user_id);
-//     userSocket?.leave(chat_id);
-// };
 
 const removeFromRoom = async (
   data: any,
@@ -111,7 +83,6 @@ const removeFromRoom = async (
     console.log("removeFromRoom failed: Token is invalid")
   }
 };
-
 
 const createChat = async (
   data: any,

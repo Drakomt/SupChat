@@ -30,7 +30,7 @@ export const uploadMessageImage = async (req: Request,res: Response) => {
   if(!req.file){
     res.status(400).json({error: 'No file uploaded'});
   }
-
+  const newMessageData = req.body;
   const chatId = req.params.id;
   const chat = await Chat.findById(chatId);
   if(!chat){
@@ -42,9 +42,9 @@ export const uploadMessageImage = async (req: Request,res: Response) => {
     text: "",
     image: imageUrl,
     dateTime: Date.now(),
-    user: req.body.user,
+    user: newMessageData.user,
   })
-
+  console.log("server datetime: ",newMessage.dateTime)
   const savedMessage = await newMessage.save();
   chat.messages.push(savedMessage._id);
   await chat.save();
