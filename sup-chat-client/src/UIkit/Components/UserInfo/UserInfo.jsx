@@ -1,9 +1,8 @@
 
 import { Rows } from "../../Layouts/Line/Line";
-import { Loading } from "../Loading/Loading";
 import "./UserInfo.css";
 import PersonIcon from '@mui/icons-material/Person';
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 
 export const UserInfo = () => {
