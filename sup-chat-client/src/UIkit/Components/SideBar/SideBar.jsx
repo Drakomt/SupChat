@@ -1,11 +1,10 @@
-import { Rows } from "../../Layouts/Line/Line";
+import { Rows, Saparate } from "../../Layouts/Line/Line";
 import { SearchBar } from "../SearchBar/SearchBar";
 import { CardList } from "../Cards/CardList/CardList";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { SideBarDropDown } from "./SideBarDropDown/SideBarDropDown";
 import { useDispatch, useSelector } from "react-redux";
-import { Saparate } from "../../Layouts/Line/Line";
 import { logOut } from "../../../store/userSlice";
 import { Button } from "../Button/Button";
 import { fetchUsers } from "../../../store/sideBarDisplaySlice";
@@ -94,6 +93,17 @@ export const SideBar = () => {
     setSearchTerm(text);
   }
 
+  let sortedChats = data;
+  if(Array.isArray(data) && data.every(item => item.hasOwnProperty('messages'))){
+    sortedChats = [...data].sort((a, b) => {
+      const lastMessageA = a.messages[a.messages.length - 1];
+      const lastMessageB = b.messages[b.messages.length - 1];
+      const dateA = lastMessageA ? new Date(lastMessageA.dateTime) : new Date(a.createdAt);
+      const dateB = lastMessageB ? new Date(lastMessageB.dateTime) : new Date(b.createdAt);
+      return dateB - dateA;
+    })
+  }
+
   return (
     <div className="sideBar">
       <Rows>
@@ -105,7 +115,8 @@ export const SideBar = () => {
           </Saparate>
           <SearchBar onSearch={onSearch} className={"sticky"}/>
         {!isLoading && !error && (
-          <CardList items={data ? filteredList : data} cardType={cardType} />
+          // <CardList items={data ? filteredList : data} cardType={cardType} />
+          <CardList items={sortedChats ? sortedChats : filteredList} cardType={cardType} />
         )}
       </Rows>
     </div>

@@ -15,7 +15,7 @@ const createChatEventName: string = "newChat";
 const updateChatEventName: string = "updateChat";
 
 const newMessage = async (data: any, io: Server, socket: Socket) => {
-  console.log(`new message recived: ${data.message.image}`);
+  //console.log(`new message recived: ${data.message.image}`);
   const { message: messageData, chat_id } = data;
 
   if(messageData.text !== '' && !messageData.image) {
@@ -25,7 +25,7 @@ const newMessage = async (data: any, io: Server, socket: Socket) => {
       dateTime: messageData.dateTime,
       user: messageData.user._id,
     });
-    console.log("new message:", newMessage);
+    //console.log("new message:", newMessage);
     await Dal.messageRep.add(newMessage);
     const chat = await Dal.chatRep.getById(chat_id);
     chat.messages.push(newMessage);

@@ -32,7 +32,7 @@ export async function addMessage(request, response) {
 }
 
 export const uploadMessageImage = async (req: Request,res: Response) => {
-  console.log("upload message image triggered")
+  //console.log("upload message image triggered")
   if(!req.file){
     res.status(400).json({error: 'No file uploaded'});
   }
@@ -50,7 +50,7 @@ export const uploadMessageImage = async (req: Request,res: Response) => {
     dateTime: Date.now(),
     user: newMessageData.user,
   })
-  console.log("server datetime: ",newMessage.dateTime)
+  //console.log("server datetime: ",newMessage.dateTime)
 
   if(newMessage.image){
     const savedMessage = await newMessage.save();
