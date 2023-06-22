@@ -15,7 +15,8 @@ const token = localStorage.getItem("token");
 let socket = null;
 
 export const emitMessage = (message, chat) => {
-  if (message.text.trim !== "") {
+  console.log("emitMessage")
+  if (message.text.trim() !== "" || message.image) {
     socket.emit("message", { chat_id: chat._id, message: message });
   }
 };

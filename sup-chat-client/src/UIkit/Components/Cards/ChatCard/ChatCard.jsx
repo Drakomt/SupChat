@@ -64,7 +64,7 @@ export const ChatCard = (chat, key) => {
     dispatch(viewChat({ chatId: chat._id }));
   };
   const shorter = (item) => {
-    return item.length > 15 ? item.substring(0, 15) + "..." : item
+    return item && item.length > 15 ? item.substring(0, 15) + "..." : item
   }
   const chatCardUI = <div onClick={onClick} key={key}>
   <ConfirmDialog
