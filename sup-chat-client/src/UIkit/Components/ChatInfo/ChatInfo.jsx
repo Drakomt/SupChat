@@ -34,6 +34,8 @@ export const ChatInfo = ({ chat }) => {
   const user_id = useSelector((state) => state?.userSlice?.user?._id);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editedChat, saveChat] = useState(chat);
+  const date = new Date(chat.createdAt);
+  const formattedDate = date.toLocaleDateString() + ", " + date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false});
   
   useEffect(() => saveChat(chat), [chat]);
   useEffect(()=>{
@@ -259,7 +261,7 @@ export const ChatInfo = ({ chat }) => {
           onChange={handleParticipantsAdd}
           defaultValue={[]}
         />}
-        <div>created at :{chat.createdAt}</div>
+        <div>created at :{formattedDate}</div>
         {didChange.current && (
           <Button onClick={() => setOpenConfirm(true)}> save </Button>
         )}

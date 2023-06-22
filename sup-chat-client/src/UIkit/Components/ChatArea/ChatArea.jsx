@@ -40,8 +40,9 @@ export const ChatArea = ({chat}) => {
   const newMessage = { user:{_id:user._id}, text, dateTime: null };
 
   const sendNewMessage = (e) => {
-    if (e) e.preventDefault();
-    if(!text){
+    console.log("new message!!!!!!!!")
+    e.preventDefault();
+    if(!text.trim() && !newMessage.image){
       displayToast("error", "Please enter a message.");
     } else{ 
       newMessage.dateTime = Date.now();
@@ -74,7 +75,8 @@ export const ChatArea = ({chat}) => {
     }
   };
 
-  const handleFileInput = () => {
+  const handleFileInput = (e) => {
+    e.preventDefault();
     if(fileInput.current){
       fileInput.current.click();
     } else {
@@ -83,6 +85,7 @@ export const ChatArea = ({chat}) => {
   };
 
   const handleImageUpload = useCallback( async (event) => {
+    console.log("handleImageUpload");
     if(event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
       try {
@@ -96,7 +99,8 @@ export const ChatArea = ({chat}) => {
         );
         // console.log("upload successful", response);
         if (response && response.message && response.message.image){
-          const imageMessage = { ...newMessage, text:'', image: response.message.image, dateTime: Date.now() };
+          const imageMessage = { ...newMessage, image: response.message.image, text: '', dateTime: Date.now() };
+          //console.log(imageMessage)
           dispatch(sendMessage(imageMessage));
           emitMessage(imageMessage, chat);
         } else {
@@ -108,7 +112,7 @@ export const ChatArea = ({chat}) => {
     } else {
       console.log("No image selected!");
     }
-  },[newMessage, dispatch, chat]);
+  },[newMessage, dispatch, chat, user]);
 
   useEffect(() => {
       return () => {
