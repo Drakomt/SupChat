@@ -85,7 +85,7 @@ export const ChatArea = ({chat}) => {
   };
 
   const handleImageUpload = useCallback( async (event) => {
-    console.log("handleImageUpload");
+    //console.log("handleImageUpload");
     if(event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
       try {
