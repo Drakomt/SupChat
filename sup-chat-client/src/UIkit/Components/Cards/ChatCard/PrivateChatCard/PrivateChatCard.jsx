@@ -57,34 +57,48 @@ export const PrivateChatCard = ({chat, key}) => {
   const shorter = (item) => {
     return item && item.length > 15 ? item.substring(0, 15) + "..." : item
   }
-  return (<div onClick={onClick} key={key}>
-    <ListItem onClick={onClick} key={key} alignItems="flex-start">
-      <ListItemAvatar>
-        <Avatar>
-          {otherUser.imageUrl && !otherUser.imageUrl.toLowerCase().split('/').includes('undefined') ? (
-            <img
-              src={`http://localhost:8080${otherUser.imageUrl}`}
-              alt="chat"
-              className="image"
+  return (
+    <div onClick={onClick} key={key}>
+      <ListItem onClick={onClick} key={key} alignItems="flex-start">
+        <ListItemAvatar>
+          <Avatar>
+            {otherUser.imageUrl &&
+            !otherUser.imageUrl
+              .toLowerCase()
+              .split("/")
+              .includes("undefined") ? (
+              <img
+                src={`http://localhost:8080${otherUser.imageUrl}`}
+                alt="chat"
+                className="image"
+              />
+            ) : (
+              <PersonIcon />
+            )}
+          </Avatar>
+        </ListItemAvatar>
+        <Grid container justifyContent={"space-between"}>
+          <Grid item>
+            <ListItemText
+              primary={shorter(otherUser.username)}
+              secondary={
+                <Typography sx={{ color: isTyping ? "blue" : "inherit" }}>
+                  {isTyping ? `Typing${dots}` : shorter(lastMessage.text)}
+                </Typography>
+              }
             />
-          ) : (
-            <PersonIcon />
-          )}
-        </Avatar>
-      </ListItemAvatar>
-      <Grid container justifyContent={"space-between"}>
-        <Grid item>
-          <ListItemText
-            primary={shorter(otherUser.username)}
-            secondary={isTyping ? `Typing${dots}` : shorter(lastMessage.text)}
-          />
+          </Grid>
+          <Grid item>
+            <Typography variant="body2">{timeStr}</Typography>
+            <Badge
+              badgeContent={newMessages > 100 ? "99+" : newMessages}
+              color="primary"
+              invisible={newMessages === 0}
+            />
+          </Grid>
         </Grid>
-        <Grid item>
-          <Typography variant="body2">{timeStr}</Typography>
-          <Badge badgeContent={newMessages > 100 ? "99+" : newMessages} color="primary" invisible={newMessages === 0}/>
-        </Grid>
-      </Grid>
-      <DropDown options={options} actions={[infoAction]} />
-    </ListItem>
-  </div>);
+        <DropDown options={options} actions={[infoAction]} />
+      </ListItem>
+    </div>
+  );
 };

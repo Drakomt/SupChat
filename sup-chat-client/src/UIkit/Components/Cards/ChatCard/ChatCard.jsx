@@ -105,5 +105,5 @@ export const ChatCard = (chat, key) => {
     <DropDown options={options} actions={[infoAction, openLeaveDialog]} />
   </ListItem>
 </div>
-  return chat.name !== 'private chat' && chatCardUI || <PrivateChatCard chat={chat} key={key}/>;
+  return chat.name !== 'private chat' ? chatCardUI : <PrivateChatCard chat={chat} key={key}/>;
 };
