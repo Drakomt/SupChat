@@ -11,7 +11,7 @@ const removeFromRoomEventName = "removeFromRoom";
 const createChatEventName = "newChat";
 const updateChatEventName = "updateChat";
 const newMessage = async (data, io, socket) => {
-    console.log(`new message recived: ${data.message.image}`);
+    //console.log(`new message recived: ${data.message.image}`);
     const { message: messageData, chat_id } = data;
     if (messageData.text !== '' && !messageData.image) {
         const newMessage = new Message({
@@ -20,7 +20,7 @@ const newMessage = async (data, io, socket) => {
             dateTime: messageData.dateTime,
             user: messageData.user._id,
         });
-        console.log("new message:", newMessage);
+        //console.log("new message:", newMessage);
         await Dal.messageRep.add(newMessage);
         const chat = await Dal.chatRep.getById(chat_id);
         chat.messages.push(newMessage);

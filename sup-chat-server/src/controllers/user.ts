@@ -13,15 +13,39 @@ export async function signUp(request, response) {
   try {
     const saltRounds = 12;
     const { email, username, password } = request.body;
+
+    if (!email || !username || !password) {
+      response.status(400).json({ error: "Please fill in all the fields."});
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      response.status(400).json({ error: "Please enter a valid email address."});
+      return;
+    }
+
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      response.status(400).json({ error: "Password must contain at least 8 characters, including letters and numbers." });
+      return;
+    }
+
+    const usernameRegex = /^.{3,20}$/;
+    if (!usernameRegex.test(username)) {
+      response.status(400).json({ error: "Username must be between 3 and 20 characters." });
+      return;
+    }
+
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-    console.log(
-      "email:",
-      email,
-      "username:",
-      username,
-      "password:",
-      hashedPassword
-    );
+    // console.log(
+    //   "email:",
+    //   email,
+    //   "username:",
+    //   username,
+    //   "password:",
+    //   hashedPassword
+    // );
     const newUser = new User({
       email,
       username,
