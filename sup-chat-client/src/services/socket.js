@@ -11,11 +11,10 @@ import {
 } from "../store/userSlice";
 import { setViewChat } from "../store/chatDisplaySlice";
 const URL = require("../URL.json").url;
-const token = localStorage.getItem("token");
 let socket = null;
 
 export const emitMessage = (message, chat) => {
-  console.log("emitMessage")
+  console.log("emitMessage");
   if (message.text.trim() !== "" || message.image) {
     socket.emit("message", { chat_id: chat._id, message: message });
   }
