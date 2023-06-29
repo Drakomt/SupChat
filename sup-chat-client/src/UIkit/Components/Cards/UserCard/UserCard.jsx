@@ -17,9 +17,9 @@ export const UserCard = (user) => {
     const isMobile = useSelector((state) => state.chatDisplaySlice.isMobile);
     //console.log("loggedInUser:", loggedInUser);
     const dispatch = useDispatch()
-    const options = ['message', 'add contact', 'add to chat', 'details'];
     const newChat = useRef({});
     const storedToken = localStorage.getItem("token");
+    const isContact = loggedInUser.friends.find( f => f._id === user._id);
     
     const fetchPrivateChat = async (user1Id, user2Id) => {
       const data = {user1Id, user2Id};
@@ -40,10 +40,10 @@ export const UserCard = (user) => {
             admins:[loggedInUser],
             name:`private chat`,
             description: "",
-            createdAt: Date.now()
+            createdAt: Date.now(),
+            createdBy: user1Id
           };
           emitNewChat(newChat.current);
-          dispatch(setSelectedChat(newChat.current));
         } else{
           dispatch(setSelectedChat(privateChat))
         }
@@ -57,8 +57,8 @@ export const UserCard = (user) => {
     const addContactAction = () =>{
   
     const updatedUser = {
-      ...loggedInUser,
-      friends: [...loggedInUser.friends, user]
+      _id:loggedInUser._id,
+      newFriend: user
     };
     customFetch("addContact", "put", {token: storedToken, user: updatedUser})
     .then((response) => {
@@ -71,9 +71,6 @@ export const UserCard = (user) => {
     });
         
     };
-    const addToChatAction = () =>{
-        console.log('menu pressed')
-    };
     const detailsAction = () =>{
       dispatch(viewUserInfo(user));
       dispatch(setIsUserInfoVisible(true));
@@ -81,19 +78,21 @@ export const UserCard = (user) => {
         dispatch(setViewChat("userInfo"));
       }
     }
+    const options = !isContact ? ['message', 'add contact', 'details'] : ['message', 'details'];
+    const actions = !isContact ? [messageAction, addContactAction, detailsAction] : [messageAction, detailsAction];
     return (
       <ListItem>
         <ListItemAvatar>
           <Avatar>
-            {user.imageUrl ? (
-              <img src={user.imageUrl} alt={user.username} />
+            {user.imageUrl && !user.imageUrl.toLowerCase().split('/').includes('undefined') ? (
+              <img src={`http://localhost:8080${user.imageUrl}`} alt={user.username} className="image"/>
             ) : (
               <PersonIcon />
             )}
           </Avatar>
         </ListItemAvatar>
         <ListItemText primary={user.username} secondary={user.email}/>
-        <DropDown options={options} actions={[messageAction, addContactAction, addToChatAction,detailsAction]}/>
+        <DropDown options={options} actions={actions}/>
       </ListItem>
     );
 }

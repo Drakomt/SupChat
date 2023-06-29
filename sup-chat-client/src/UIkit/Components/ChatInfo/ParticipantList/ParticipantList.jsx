@@ -4,15 +4,36 @@ import "./ParticipantList.css";
 import { Button } from "../../Button/Button";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { Participant } from "./Participant/Participant";
-export const ParticipantList = ({ participants, admins, isAdmin = false, onRemove }) => {
-  const List = participants?.map((p) => {
+import { Divider, List, ListItem } from "@mui/material";
+export const ParticipantList = ({
+  participants,
+  admins,
+  isAdmin = false,
+  options,
+  actions,
+}) => {
+  const participantList = participants?.map((p, index) => {
     return (
-      <Participant participant={p} admins={admins} isUserAdmin={isAdmin} onRemove={onRemove} key={p._id}/>
+      <ListItem key={p._id}>
+        <Participant
+          participant={p}
+          admins={admins}
+          isUserAdmin={isAdmin}
+          options={options}
+          actions={actions}
+          key={p._id}
+        />
+        {index !== participants.length - 1 && <Divider variant="inset" component="li"/>}
+      </ListItem>
     );
   });
   return (
     <div className="ParticipantList">
-      <Rows>{List}</Rows>
+      <List
+        sx={{ width: "100%", maxWidth: "100%", bgcolor: "background.paper" }}
+      >
+        {participantList}
+      </List>
     </div>
   );
 };

@@ -8,6 +8,7 @@ const UserSchema = new Schema({
     password: { type: String, required: true },
     imageUrl: { type: String },
     createdAt: { type: Date },
+    joinedDict: { type: Object, required: true }
 });
 // Define and export the model
 export const User = mongoose.model('User', UserSchema);

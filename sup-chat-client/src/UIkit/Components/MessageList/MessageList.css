@@ -16,10 +16,10 @@
 
 .messageList>*>*>*>.messageCard.mymessage {
     align-self: flex-start;
-    background-color: aqua;
+    background-color: var(--light-blue);
 }
 
 .messageList>*>*>*>.messageCard.othermessage {
     align-self: flex-end;
-    background-color: bisque;  
+    background-color: var(--light-gray);  
 }

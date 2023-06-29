@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { fetchUserList } from "../../../store/chatDisplaySlice";
-import { Line, Saparate, Rows } from "../../Layouts/Line/Line";
+import { Rows } from "../../Layouts/Line/Line";
 import { Loading } from "../Loading/Loading";
 import "./ChatInfo.css";
 import { ParticipantList } from "./ParticipantList/ParticipantList";
@@ -14,28 +14,42 @@ import { ConfirmDialog } from "../ConfirmDialog/ConfirmDialog";
 import { emitUpdateChat } from "../../../services/socket";
 import { updateChat } from "../../../store/userSlice";
 import { Badge, Button, Drawer } from "@mui/material";
-import { Input } from "../Input/Input/Input";
 import { customFetch } from "../../utils/customFetch";
 import { FileInput } from "../Input/FileInput/FileInput";
 import Select from "react-select";
+import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 
 export const ChatInfo = ({ chat }) => {
   const dispatch = useDispatch();
-  const participants = useSelector(
+  const currentParticipants = useSelector(
     (state) => state.chatDisplaySlice.participantList
   );
+  const displayedParticipants = useRef([]);
+  if (!displayedParticipants.current.length || !currentParticipants.length) {
+    displayedParticipants.current = [...currentParticipants];
+  }
+
   const error = useSelector((state) => state.chatDisplaySlice.error);
   const isLoading = useSelector((state) => state.chatDisplaySlice.isLoading);
   const user_id = useSelector((state) => state?.userSlice?.user?._id);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editedChat, saveChat] = useState(chat);
+  const date = new Date(chat.createdAt);
+  const formattedDate = date.toLocaleDateString() + ", " + date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false});
+  
   useEffect(() => saveChat(chat), [chat]);
+  useEffect(()=>{
+    displayedParticipants.current = [...currentParticipants];
+    saveChat({...chat})
+  },[currentParticipants]);
+
   const [dialogData, setDialogData] = useState({ open: false });
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [doAddP, setDoAddP] = useState(false);
+
   const didChange = useRef(false);
   const fileInput = useRef(null);
   const isAdmin = chat?.admins?.includes(user_id);
-  const [newParticipants, setNewParticipants] = useState([]);
   const contacts = useSelector((state) => state.userSlice.user?.friends);
 
   const newParticipantOptions = contacts
@@ -43,13 +57,23 @@ export const ChatInfo = ({ chat }) => {
       value: contact._id,
       label: contact.username,
     }))
-    .filter((o) => !participants.includes(o.value));
+    .filter(
+      (o) => !displayedParticipants.current.find((p) => p._id === o.value)
+    );
 
   const handleParticipantsAdd = (selected) => {
     const selectedValues = selected.map((o) => o.value);
     const copy = { ...editedChat };
     copy.participants = [...chat.participants, ...selectedValues];
     didChange.current = true;
+    const addedParticipants = contacts
+    .filter(c => selectedValues.includes(c._id))
+    .map(c => {return {email:c.email, username:c.username, _id:c._id }});
+    displayedParticipants.current = [
+      ...displayedParticipants.current,
+      ...addedParticipants,
+    ];
+    setDoAddP(false);
     saveChat(copy);
   };
   const handleDrawerOpen = () => {
@@ -68,7 +92,11 @@ export const ChatInfo = ({ chat }) => {
     }
   };
 
-  if ((!participants || participants.length === 0) && !error && !isLoading) {
+  if (
+    (!currentParticipants || currentParticipants.length === 0) &&
+    !error &&
+    !isLoading
+  ) {
     dispatch(fetchUserList(chat.participants));
   }
 
@@ -77,9 +105,28 @@ export const ChatInfo = ({ chat }) => {
     copy.participants = copy.participants.filter((p) => {
       return p !== removedParticipant._id;
     });
+    displayedParticipants.current = displayedParticipants.current.filter(
+      (p) => {
+        return p._id !== removedParticipant._id;
+      }
+    );
     didChange.current = true;
     saveChat(copy);
   };
+
+  const promoteParticipant = (participant) =>{
+    const copy = { ...editedChat };
+    copy.admins = [...copy.admins, participant._id]
+    didChange.current = true;
+    saveChat(copy);
+  }
+
+  const demoteParticipant = (participant) => {
+    const copy = { ...editedChat };
+    copy.admins = copy.admins.filter(p => p !== participant._id);
+    didChange.current = true;
+    saveChat(copy);
+  }
 
   const handleChange = useCallback(
     async (event) => {
@@ -139,16 +186,15 @@ export const ChatInfo = ({ chat }) => {
           didChange.current = false;
         }}
       />
-
       <Rows>
         <Badge
-          color="secondary"
+          color="info"
           style={{ fontSize: 40 }}
           badgeContent={<CameraAltIcon />}
           anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
           onClick={handleDrawerOpen}
         >
-          {chat.imageUrl ? (
+          {chat.imageUrl &&  !chat.imageUrl.toLowerCase().split('/').includes('undefined') ? (
             <img
               src={`http://localhost:8080${chat.imageUrl}`}
               alt="chat"
@@ -167,7 +213,7 @@ export const ChatInfo = ({ chat }) => {
             />
             <FileInput
               className={"file"}
-              forwardedref={fileInput}
+              ref={fileInput}
               onTextChange={handleChange}
             />
           </div>
@@ -179,7 +225,7 @@ export const ChatInfo = ({ chat }) => {
             <Button
               onClick={() => setDialogData({ open: true, field: "name" })}
             >
-              <EditIcon />
+              <EditIcon color="info"/>
             </Button>
           )}
         </h1>
@@ -191,27 +237,31 @@ export const ChatInfo = ({ chat }) => {
                 setDialogData({ open: true, field: "description" })
               }
             >
-              <EditIcon />
+              <EditIcon color="info"/>
             </Button>
           )}
         </h3>
         <h3>participants: </h3>
         <ParticipantList
-          participants={participants.filter((p) =>
-            editedChat.participants.includes(p._id)
-          )}
-          admins={chat.admins}
+          participants={displayedParticipants.current}
+          admins={editedChat.admins}
           isAdmin={isAdmin}
-          onRemove={removeParticipant}
+          options={["make admin", "remove admin", "remove"]}
+          actions = {[promoteParticipant,demoteParticipant,removeParticipant]}
         ></ParticipantList>
-        <Select
+        {isAdmin && !doAddP && (
+          <Button onClick={() => setDoAddP(true)}>
+            <AddCircleOutlineRoundedIcon color="info" />
+          </Button>
+        )}
+        {doAddP && <Select
           placeholder={"Participants"}
           isMulti
           options={newParticipantOptions}
           onChange={handleParticipantsAdd}
           defaultValue={[]}
-        />
-        <div>created at :{chat.createdAt}</div>
+        />}
+        <div>created at :{formattedDate}</div>
         {didChange.current && (
           <Button onClick={() => setOpenConfirm(true)}> save </Button>
         )}

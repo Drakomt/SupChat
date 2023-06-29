@@ -1,30 +1,42 @@
-import { Fragment } from "react";
-
 import "./Participant.css";
-import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { Line, Saparate } from "../../../../Layouts/Line/Line";
-import { Button } from "../../../Button/Button";
-export const Participant = ({ participant, admins, isUserAdmin, onRemove}) => {
+import { DropDown } from "../../../DropDown/DropDown";
+export const Participant = ({
+  participant,
+  admins,
+  isUserAdmin,
+  options,
+  actions,
+}) => {
   const isParticipantAdmin = admins.includes(participant._id);
-  
-    const removeParticipant = () =>{
-    onRemove(participant);
-    }
+  let displayedOptions;
+  let displayedActions;
+  if (isParticipantAdmin) {
+    displayedOptions = [...options].slice(1);
+    displayedActions = [
+      ...actions.map((action) => () => action(participant)),
+    ].slice(1);
+  } else {
+    displayedOptions = options.filter((_, index) => index !== 1);
+    displayedActions = actions
+      .map((action) => () => action(participant))
+      .filter((_, index) => index !== 1);
+  }
+
   return (
-    <div className="Participant">
-      <Line>
-        <div className="participant" key={participant._id}>
-            <Saparate>
-              <div>{participant.username}</div>
-              <div>{participant.email}</div>
-            </Saparate>
-        </div>
-        {isUserAdmin && (
-              <Button className={"minus"} onClick={removeParticipant}>
-                <RemoveCircleOutlineIcon />
-              </Button>
-            )}
-      </Line>
+    <div className="Participant" key={participant._id}>
+      <Saparate>
+        <Line>
+          <div>{participant.username}</div>
+          <div>{participant.email}</div>
+        </Line>
+        <Line>
+          {isParticipantAdmin && <div className="adminTag">Admin</div>}
+          {isUserAdmin && (
+            <DropDown options={displayedOptions} actions={displayedActions} />
+          )}
+        </Line>
+      </Saparate>
     </div>
   );
 };

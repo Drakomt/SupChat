@@ -9,17 +9,24 @@ import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import { AddChat } from "../../../pages/addChat";
 import { connectSocket, disconnectSocket } from "../../../services/socket";
-import { logOut ,fetchUser} from "../../../store/userSlice";
+import { logOut, fetchUser } from "../../../store/userSlice";
 import { Profile } from "../../../pages/profile";
 import { UserInfo } from "../../Components/UserInfo/UserInfo";
 import { Button } from "../../Components/Button/Button";
-import { setViewChat, setIsMobile, setIsChatVisible, setIsInfoVisible, setIsUserInfoVisible } from "../../../store/chatDisplaySlice";
+import {
+  setViewChat,
+  setIsMobile,
+  setIsChatVisible,
+  setIsInfoVisible,
+  fetchUserList,
+  setIsUserInfoVisible,
+} from "../../../store/chatDisplaySlice";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { setDisplayChat } from "../../../store/displaySlice";
 
 const BackButton = ({ onClick }) => (
   <Button className={"back"} onClick={onClick}>
-    <ArrowBackIcon/>
+    <ArrowBackIcon />
   </Button>
 );
 
@@ -44,13 +51,14 @@ export const MainLayout = () => {
   const isUserInfoVisible = useSelector((state) => state.chatDisplaySlice.isUserInfoVisible);
 
   useEffect(() => {
+    
     if (user) {
       connectSocket(user);
     }
-    return () => {
+    return () =>{
       disconnectSocket();
-    };
-  }, []);
+    }
+  },);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -58,11 +66,17 @@ export const MainLayout = () => {
       console.log("NO Token Found. Redirecting to login page...");
       dispatch(logOut());
       navigate("/login");
-    } else  {
+    } else {
       //console.log("Token Found:", storedToken);
-      dispatch(fetchUser({token: storedToken}));
+      dispatch(fetchUser({ token: storedToken }));
     }
   }, [navigate, dispatch]);
+
+  useEffect(() => {
+    if (selectedChat?.participants){
+      dispatch(fetchUserList(selectedChat.participants));
+    }
+  }, [selectedChat, dispatch]);
 
   const handleSetView = (view) => {
     dispatch(setViewChat(view));
@@ -78,7 +92,7 @@ export const MainLayout = () => {
   const handleResize = () => {
     const isMobileNow = window.innerWidth <= 768;
     dispatch(setIsMobile(isMobileNow));
-    if (isChatVisible && isMobileNow) {
+    if (isChatVisible && isMobileNow && selectedChat !== null) {
       dispatch(setViewChat("chat"));
     } else {
       dispatch(setViewChat("sidebar"));
@@ -91,7 +105,6 @@ export const MainLayout = () => {
 
     return () => window.removeEventListener("resize", handleResize);
   },[dispatch]);
-
  
   // console.log(isChatVisible)
   // console.log(isInfoVisible)

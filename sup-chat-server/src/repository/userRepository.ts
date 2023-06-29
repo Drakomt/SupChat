@@ -31,6 +31,12 @@ export class UserRepository extends Repository<IUser> implements IUserRepository
         model:'User'
       }
     });
+
+    if(!user)
+    {
+      return null;
+    }
+
     let chatIndex = 0;
     let privateIndex = 0
     while (chatIndex < user.chats.length && privateIndex < privateChatsUser.chats.length){

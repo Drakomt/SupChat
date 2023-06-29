@@ -8,11 +8,13 @@
     word-wrap: break-word;
     max-width: 60%;
     text-align: start;
+    padding-bottom: 2px;
 }
 
 .imageMessage{
     max-width: 350px;
     max-height: 350px;
+    width: 80%;
     border-radius: 15px;
     padding: 5px;
 }

@@ -1,12 +1,7 @@
-import { Rows } from "../../../Layouts/Line/Line"
-import { SearchBar } from "../../SearchBar/SearchBar"
-import { UseFetch } from "../../../../CustomHooks/useFetch"
 import { useEffect, useState } from "react"
 import { DropDown } from "../../DropDown/DropDown"
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, updateDisplayParams } from "../../../../store/sideBarDisplaySlice"
-import { UserCard } from "../../Cards/UserCard/UserCard"
-import { ChatCard } from "../../Cards/ChatCard/ChatCard"
 
 export const SideBarDropDown = ({ searchTerm }) => {
     const dispatch = useDispatch()

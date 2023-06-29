@@ -16,7 +16,7 @@ export const ChatCard = (chat, key) => {
   const [dots, setDots] = useState(".");
   const dispatch = useDispatch();
   const isTyping = Array.isArray(chat.typingUsers) && chat.typingUsers.length > 0;
-  const lastMessage = chat.messages?.slice(-1)[0] ? chat.messages?.slice(-1)[0] : { dateTime: new Date(), text: "last message" };
+  const lastMessage = chat.messages?.slice(-1)[0] ? chat.messages?.slice(-1)[0] : { dateTime: chat.createdAt, text: "last message" };
   const date = new Date(lastMessage.dateTime);
   const timeStr = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false,});
   const options = ["details", "exit chat"];
@@ -64,7 +64,7 @@ export const ChatCard = (chat, key) => {
     dispatch(viewChat({ chatId: chat._id }));
   };
   const shorter = (item) => {
-    return item.length > 15 ? item.substring(0, 15) + "..." : item
+    return item && item.length > 15 ? item.substring(0, 15) + "..." : item
   }
   const chatCardUI = <div onClick={onClick} key={key}>
   <ConfirmDialog
@@ -75,7 +75,7 @@ export const ChatCard = (chat, key) => {
   <ListItem onClick={onClick} key={key} alignItems="flex-start">
     <ListItemAvatar>
       <Avatar>
-        {chat.imageUrl ? (
+        {chat.imageUrl && !chat.imageUrl.toLowerCase().split('/').includes('undefined') ? (
           <img
             src={`http://localhost:8080${chat.imageUrl}`}
             alt="chat"
@@ -105,5 +105,5 @@ export const ChatCard = (chat, key) => {
     <DropDown options={options} actions={[infoAction, openLeaveDialog]} />
   </ListItem>
 </div>
-  return chat.name !== 'private chat' && chatCardUI || <PrivateChatCard chat={chat} key={key}/>;
+  return chat.name !== 'private chat' ? chatCardUI : <PrivateChatCard chat={chat} key={key}/>;
 };

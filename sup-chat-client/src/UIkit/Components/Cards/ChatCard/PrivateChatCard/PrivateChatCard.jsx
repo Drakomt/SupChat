@@ -1,16 +1,13 @@
-import { Line, Saparate, Rows } from "../../../../Layouts/Line/Line";
-import GroupsIcon from "@mui/icons-material/Groups";
 import "./PrivateChatCard.css";
 import { useDispatch, useSelector } from "react-redux";
-import { selectNewMessageCount, setSelectedChat, viewChat } from "../../../../../store/userSlice";
+import { selectNewMessageCount, setSelectedChat,viewChat } from "../../../../../store/userSlice";
 import { useEffect, useState } from "react";
-import { resetParticipants, setDisplay, setIsChatVisible, setIsUserInfoVisible, setViewChat } from "../../../../../store/chatDisplaySlice";
+import { resetParticipants, setIsChatVisible, setIsUserInfoVisible, setViewChat } from "../../../../../store/chatDisplaySlice";
 import { DropDown } from "../../../DropDown/DropDown";
-import { ConfirmDialog } from "../../../ConfirmDialog/ConfirmDialog";
-import { removeSelfFromChatRoom } from "../../../../../services/socket";
 import { Avatar, Badge, Grid, ListItem, ListItemAvatar, ListItemText, Typography } from "@mui/material";
-import { viewChatInfo, viewChatMessages } from "../../../../../store/displaySlice";
+import { viewChatMessages } from "../../../../../store/displaySlice";
 import { viewUserInfo } from "../../../../../store/displaySlice";
+import PersonIcon from '@mui/icons-material/Person';
 
 export const PrivateChatCard = ({chat, key}) => {
   const [dots, setDots] = useState(".");
@@ -56,38 +53,53 @@ export const PrivateChatCard = ({chat, key}) => {
     if(isMobile){
       dispatch(setViewChat("chat"));
     }
+    // dispatch(viewChat({ chatId: chat._id }));
   };
   const shorter = (item) => {
-    return item.length > 15 ? item.substring(0, 15) + "..." : item
+    return item && item.length > 15 ? item.substring(0, 15) + "..." : item
   }
-  return (<div onClick={onClick} key={key}>
-    <ListItem onClick={onClick} key={key} alignItems="flex-start">
-      <ListItemAvatar>
-        <Avatar>
-          {otherUser.imageUrl ? (
-            <img
-              src={`http://localhost:8080${otherUser.imageUrl}`}
-              alt="chat"
-              className="image"
+  return (
+    <div onClick={onClick} key={key}>
+      <ListItem onClick={onClick} key={key} alignItems="flex-start">
+        <ListItemAvatar>
+          <Avatar>
+            {otherUser.imageUrl &&
+            !otherUser.imageUrl
+              .toLowerCase()
+              .split("/")
+              .includes("undefined") ? (
+              <img
+                src={`http://localhost:8080${otherUser.imageUrl}`}
+                alt="chat"
+                className="image"
+              />
+            ) : (
+              <PersonIcon />
+            )}
+          </Avatar>
+        </ListItemAvatar>
+        <Grid container justifyContent={"space-between"}>
+          <Grid item>
+            <ListItemText
+              primary={shorter(otherUser.username)}
+              secondary={
+                <Typography sx={{ color: isTyping ? "blue" : "inherit" }}>
+                  {isTyping ? `Typing${dots}` : shorter(lastMessage.text)}
+                </Typography>
+              }
             />
-          ) : (
-            <GroupsIcon />
-          )}
-        </Avatar>
-      </ListItemAvatar>
-      <Grid container justifyContent={"space-between"}>
-        <Grid item>
-          <ListItemText
-            primary={shorter(otherUser.username)}
-            secondary={isTyping ? `Typing${dots}` : shorter(lastMessage.text)}
-          />
+          </Grid>
+          <Grid item>
+            <Typography variant="body2">{timeStr}</Typography>
+            <Badge
+              badgeContent={newMessages > 100 ? "99+" : newMessages}
+              color="primary"
+              invisible={newMessages === 0}
+            />
+          </Grid>
         </Grid>
-        <Grid item>
-          <Typography variant="body2">{timeStr}</Typography>
-          <Badge badgeContent={newMessages > 100 ? "99+" : newMessages} color="primary" invisible={newMessages === 0}/>
-        </Grid>
-      </Grid>
-      <DropDown options={options} actions={[infoAction]} />
-    </ListItem>
-  </div>);
+        <DropDown options={options} actions={[infoAction]} />
+      </ListItem>
+    </div>
+  );
 };

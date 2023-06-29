@@ -28,6 +28,7 @@ export async function signUp(request, response) {
       password: hashedPassword,
       createdAt: Date.now(),
       imageUrl: `/images/chats/${request.file?.filename}`,
+      joinedDict: {}
     });
     const signUpUser = await Dal.userRep.add(newUser);
     response.sendStatus(201);
@@ -72,13 +73,17 @@ export async function login(request, response) {
         });
 
         response.json({ token: newToken, user: foundUser });
+      }else {
+        // response.status(404).json({ error: "Password is invalid" });
+        response.status(404).send("Password is invalid");
       }
     } else {
-      response.status(404).send("user not found");
+      // response.status(404).json({ error: "Email is invalid" });
+      response.status(404).send("Email is invalid");
     }
   } catch (error) {
     console.log("Login error:", error);
-    response.response.status(500).send("Internal server error");
+    response.status(500).send("Internal server error");
   }
 }
 
@@ -88,7 +93,7 @@ export async function addContact(request, response) {
   console.log("friends: ", request.body.user.friends);
   const updatedUserData = request.body.user;
   const updatedUser = await Dal.userRep.getById(updatedUserData._id);
-  updatedUser.friends = updatedUserData.friends;
+  updatedUser.friends.push(updatedUserData.newFriend);
   await Dal.userRep.update(updatedUser._id, updatedUser);
   console.log("User Updated");
   response.status(202).send("user updated");

@@ -82,7 +82,7 @@ export const Profile = ({ user }) => {
   return (
     <div className="profile">
       <Badge
-        color="secondary"
+        color="info"
         style={{ fontSize: 40 }}
         badgeContent={<CollectionsIcon />}
         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
@@ -93,7 +93,7 @@ export const Profile = ({ user }) => {
           src={`http://localhost:8080${user.imageUrl}`}
           style={{ height: "100px", width: "100px" }}
         />
-        <FileInput className={"file"} forwardedref={fileInput} onTextChange={handleChange}/>
+        <FileInput className={"file"} ref={fileInput} onTextChange={handleChange}/>
       </Badge>
       {/* <ListItem>
         <CollectionsIcon style={{ fontSize: 40 }} onClick={handleFileInput} />
@@ -145,7 +145,7 @@ export const Profile = ({ user }) => {
         />
       </ListItem>
       <ListItem>
-        <Button onClick={() => saveChanges()}>save</Button>
+        <Button onClick={() => saveChanges()} className={"saveBtn"}>save</Button>
       </ListItem>
     </div>
   );

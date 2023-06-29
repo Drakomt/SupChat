@@ -11,26 +11,32 @@ export async function addMessage(request, response) {
   console.log('adding a message...');
   const newMessageData = request.body;
   console.log( "newMessageData:",request.body);
-  const newMessage = new Message({
-    text: newMessageData.text,
-    dateTime: newMessageData.dateTime,
-    user: newMessageData.user._id
-    });
-  await Dal.messageRep.add(newMessage);
+  if(newMessageData.text || newMessageData.image){
 
-  console.log("New Message Data:", newMessageData);
-  const Chat = await Dal.chatRep.getById(newMessageData.chat._id);
-  Chat.messages.push(newMessage);
-  Dal.chatRep.update(Chat._id, Chat);
-  
-  response.status(201).send('message sent to server');
+    const newMessage = new Message({
+      text: newMessageData.text,
+      dateTime: newMessageData.dateTime,
+      user: newMessageData.user._id
+    });
+    await Dal.messageRep.add(newMessage);
+    
+    console.log("New Message Data:", newMessageData);
+    const Chat = await Dal.chatRep.getById(newMessageData.chat._id);
+    Chat.messages.push(newMessage);
+    Dal.chatRep.update(Chat._id, Chat);
+    
+    response.status(201).send('message sent to server');
+  } else {
+    response.status(400).send('no text or image');
+  }
 }
 
 export const uploadMessageImage = async (req: Request,res: Response) => {
+  //console.log("upload message image triggered")
   if(!req.file){
     res.status(400).json({error: 'No file uploaded'});
   }
-
+  const newMessageData = req.body;
   const chatId = req.params.id;
   const chat = await Chat.findById(chatId);
   if(!chat){
@@ -42,12 +48,17 @@ export const uploadMessageImage = async (req: Request,res: Response) => {
     text: "",
     image: imageUrl,
     dateTime: Date.now(),
-    user: req.body.user,
+    user: newMessageData.user,
   })
+  //console.log("server datetime: ",newMessage.dateTime)
 
-  const savedMessage = await newMessage.save();
-  chat.messages.push(savedMessage._id);
-  await chat.save();
-  
-  return res.status(200).json({message: savedMessage});
+  if(newMessage.image){
+    const savedMessage = await newMessage.save();
+    chat.messages.push(savedMessage._id);
+    await chat.save();
+    
+    return res.status(200).json({message: savedMessage});
+  } else {
+    return res.status(400).json({error: 'No image saved'});
+  }
 };

@@ -9,37 +9,42 @@ import {
   removeFromChatRoom,
   updateChat,
 } from "../store/userSlice";
+import { setViewChat } from "../store/chatDisplaySlice";
 const URL = require("../URL.json").url;
-const token = localStorage.getItem("token");
-const socket = io(URL, {
-  transports: ["websocket"],
-  autoConnect: false,
-});
+let socket = null;
 
 export const emitMessage = (message, chat) => {
-  if (message.text.trim !== "") {
+  console.log("emitMessage")
+  if (message.text.trim() !== "" || message.image) {
     socket.emit("message", { chat_id: chat._id, message: message });
   }
 };
 
-export const emitNewChat = (chat) => socket.emit("newChat", { chat, token });
+export const emitNewChat = (chat) =>
+  socket.emit("newChat", { chat, token: localStorage.getItem("token") });
 
 export const emitUpdateChat = (chat) =>
-  socket.emit("updateChat", { chat, token });
+  socket.emit("updateChat", { chat, token: localStorage.getItem("token") });
 
 export const emitUpdateUser = (user) =>
-  socket.emit("updateUser", { user, token });
+  socket.emit("updateUser", { user, token: localStorage.getItem("token") });
 
-const listenToMessages = () =>{
+const listenToMessages = () => {
   socket.on("message", (data) => {
-    console.log('socket id: ',socket.id );
-    store.dispatch(reciveMessage(data))
+    console.log("socket id: ", socket.id);
+    store.dispatch(reciveMessage(data));
   });
-}
+};
 
 const listenToNewChats = () =>
   socket.on("newChat", (data) => {
     socket.emit("joinRoom", data._id);
+    if (
+      store.getState().chatDisplaySlice.viewChat === "addChat" &&
+      data.createdBy === store.getState().userSlice.user._id
+    ) {
+      store.dispatch(setViewChat("sidebar"));
+    }
     store.dispatch(addNewChat(data));
   });
 export const listenToChatUpdates = () => {
@@ -53,6 +58,11 @@ export const listenToUserRemove = () => {
 };
 
 export const connectSocket = (user) => {
+  socket = io(URL, {
+    transports: ["websocket"],
+    autoConnect: false,
+  });
+  console.log("re connecting socket...");
   if (!socket.connected) {
     const username = user.username;
     socket.auth = { username };
@@ -60,7 +70,7 @@ export const connectSocket = (user) => {
     // console.log("connecting to the server...",socket.connect);
     user.chats.forEach((chat) => socket.emit("joinRoom", chat._id));
     socket.emit("subscribe", user._id);
-    if(socket.listeners('message').length === 0){
+    if (socket.listeners("message").length === 0) {
       listenToMessages();
       listenToNewChats();
       listenToUserRemove();
@@ -89,7 +99,7 @@ export const addToRoom = (chat, user) =>
   socket.emit("addToRoom", { chat_id: chat._id, user_id: user._id });
 
 export const disconnectSocket = () => {
-  if (socket.connected) {
+  if (socket?.connected) {
     socket.disconnect();
   }
 };

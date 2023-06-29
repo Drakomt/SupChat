@@ -1,4 +1,4 @@
-import { useState,React, useRef, useEffect } from "react";
+import { React, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Input } from "../UIkit/Components/Input/Input/Input";
@@ -26,13 +26,24 @@ export const Login = () => {
           displayToast("success", "login successful");
           navigate("/chats");
         }else if (error) displayToast("error", "login failed");
-    },[user,error])
+    },[user,error,navigate])
 
     const submit = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const email = formData.get('email');
         const password = formData.get('password');
+
+        if (!email) {
+            displayToast("error", "Please enter your email.");
+            return;
+        }
+        
+        if (!password) {
+        displayToast("error", "Please enter your password.");
+        return;
+        }
+
         if (password !== inputData.current.password || email !== inputData.current.email){
             inputData.current.email = email;
             inputData.current.password = password;
@@ -47,9 +58,9 @@ export const Login = () => {
                     <Input placeholder={"Email"} name="email"/>
                     <Input type={"password"} placeholder={"Password"} name="password"/>
                     <Button type={"submit"} className="btn">Log In</Button>
-                    or
+                    <div className="or">or</div>
                     <Button type={"button"} onClick={() => navigate("/signUp")} className="btn">Sign Up</Button>
-                    <span style={{color:"red"}}>{error && "invalid fields"}</span>
+                    <span style={{color:"red"}}>{error && error.message}</span>
                 </Rows>
             </form>
         </div>)

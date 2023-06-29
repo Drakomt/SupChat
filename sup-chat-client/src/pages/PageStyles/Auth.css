@@ -18,7 +18,3 @@
     align-items: center;
     background-color: var(--secondary);
 }
-
-.logIn>.input, .signUp>.input{
-    background-color: aqua;
-}

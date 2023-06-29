@@ -13,8 +13,6 @@ import {
   emitTyping,
   emitStopTyping,
 } from "../../../services/socket";
-//import { Picker } from "emoji-mart";
-//import "emoji-mart/css/emoji-mart.css";
 import "./ChatArea.css";
 import { customFetch } from "../../utils/customFetch";
 import { FileInput } from "../Input/FileInput/FileInput";
@@ -23,20 +21,18 @@ export const ChatArea = ({chat}) => {
   let typingTimeoutRef = useRef(null);
   const fileInput = useRef(null);
   const dispatch = useDispatch();
-  // const chat = useSelector((state) => state.userSlice.selectedChat) || {
-  //   messages: [],
-  // };
   const messages = useSelector(
     (state) => state.userSlice.selectedChat?.messages
   );
   const user = useSelector((state) => state.userSlice.user);
   const [text, setText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const newMessage = { user, text, dateTime: null };
+  const newMessage = { user:{_id:user._id,username: user.username}, text, dateTime: null };
 
   const sendNewMessage = (e) => {
-    if (e) e.preventDefault();
-    if(!text){
+    //console.log("new message!!!!!!!!", user)
+    e.preventDefault();
+    if(!text.trim() && !newMessage.image){
       alert("enter message")
     } else{ 
       newMessage.dateTime = Date.now();
@@ -69,7 +65,8 @@ export const ChatArea = ({chat}) => {
     }
   };
 
-  const handleFileInput = () => {
+  const handleFileInput = (e) => {
+    e.preventDefault();
     if(fileInput.current){
       fileInput.current.click();
     } else {
@@ -78,6 +75,7 @@ export const ChatArea = ({chat}) => {
   };
 
   const handleImageUpload = useCallback( async (event) => {
+    //console.log("handleImageUpload");
     if(event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
       try {
@@ -89,9 +87,10 @@ export const ChatArea = ({chat}) => {
           "POST",
           formData
         );
-        console.log("upload successful", response);
+        // console.log("upload successful", response);
         if (response && response.message && response.message.image){
-          const imageMessage = { ...newMessage, text:'', image: response.message.image, dateTime: Date.now() };
+          const imageMessage = { ...newMessage, image: response.message.image, text: '', dateTime: Date.now() };
+          //console.log(imageMessage)
           dispatch(sendMessage(imageMessage));
           emitMessage(imageMessage, chat);
         } else {
@@ -103,7 +102,7 @@ export const ChatArea = ({chat}) => {
     } else {
       console.log("No image selected!");
     }
-  },[newMessage, dispatch, chat]);
+  },[newMessage, dispatch, chat, user]);
 
   useEffect(() => {
       return () => {
@@ -129,8 +128,8 @@ export const ChatArea = ({chat}) => {
                 value={text}
                 className="inputForm"
               />
-              <Button onClick={handleFileInput} className="buttonForm"> <CameraAltIcon/> </Button>
-              <Button onClick={sendNewMessage} className="buttonForm"> <SendIcon/> </Button>
+              <Button onClick={handleFileInput} className="buttonForm btnGallery"> <CameraAltIcon/> </Button>
+              <Button onClick={sendNewMessage} className="buttonForm btnSend"> <SendIcon/> </Button>
               <FileInput className={"hidden"} ref={fileInput} onTextChange={handleImageUpload}/>
             </Saparate>
           </form>

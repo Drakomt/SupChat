@@ -4,7 +4,11 @@ import {
   createSelector,
 } from "@reduxjs/toolkit";
 import { customFetch } from "../UIkit/utils/customFetch";
-
+const processChat = (chat, joinedDict) =>{
+  chat.typingUsers = [];
+  const joinTime = joinedDict[chat._id];
+  chat.messages = chat.messages.filter(m => Date.parse(m.dateTime) >= joinTime)
+}
 // export const fetchUser = createAsyncThunk(
 //   "userSlice/fetchUser",
 //   async (data) => await customFetch("login", "post", data)
@@ -16,6 +20,7 @@ export const fetchUser = createAsyncThunk(
     console.log("Data: ", data);
     if (data.email && data.password) {
       // If email and password are present, use login endpoint
+
       return await customFetch("login", "post", data);
     } else if (data.token) {
       // If token is present, use getUserByToken endpoint
@@ -64,19 +69,25 @@ export const userSlice = createSlice({
       state.user = { ...state.user };
     },
     addNewChat(state, action) {
-      console.log("added chat:", action.payload);
-      action.payload.typingUsers = [];
-      state.user.chats.push(action.payload);
-      state.selectedChat = action.payload;
+      const newChat = action.payload;
+      console.log("added chat:", newChat);
+      if( !state.user.joinedDict){
+        state.user.joinedDict = {};
+      }
+      state.user.joinedDict[newChat._id] = Date.now();
+      processChat(newChat, state.user.joinedDict)
+      newChat.typingUsers = [];
+      state.user.chats.push(newChat);
+      if(newChat.name === 'private chat' && newChat.participants[0]._id === state.user._id){
+        state.selectedChat = newChat;
+      }
     },
     setSelectedChat(state, action) {
       state.selectedChat = state.user.chats.find(
         (chat) => chat._id === action.payload._id
       );
-      // if (state.selectedChat && !state.selectedChat.typingUsers) {
-      //   state.selectedChat.typingUsers = [];
-      // }
-      console.log("new active chat: ", action.payload);
+      state.selectedChat = {...state.selectedChat}
+      console.log("new active chat: ", state.selectedChat);
     },
     sendMessage(state, action) {
       const selectedChat = state.user.chats.find(
@@ -98,7 +109,7 @@ export const userSlice = createSlice({
         chat.typingUsers = [];
       }
       if (!state.selectedChat || chat._id === state.selectedChat._id) {
-        state.selectedChat = {...chat};
+        state.selectedChat = { ...chat };
       }
     },
     leaveChat(state, action) {
@@ -112,9 +123,11 @@ export const userSlice = createSlice({
       console.log("current chats: ", state.user.chats);
     },
     removeFromChatRoom(state, action) {
-      console.log('in remove from chatroom with: ',action.payload);
-      if(action.payload.user._id === state.user._id){
-        state.user.chats = state.user.chats.filter(c => c._id !== action.payload.chat._id);
+      console.log("in remove from chatroom with: ", action.payload);
+      if (action.payload.user._id === state.user._id) {
+        state.user.chats = state.user.chats.filter(
+          (c) => c._id !== action.payload.chat._id
+        );
         if (action.payload.chat._id === state.selectedChat._id) {
           state.selectedChat = null;
         }
@@ -123,23 +136,43 @@ export const userSlice = createSlice({
         const chat = state.user.chats.find(c => c._id === action.payload.chat._id);
         chat.participants = chat.participants.filter(p => p !== action.payload.user._id);
         chat.admins = chat.admins.filter(p => p !== action.payload.user._id);
+        if (chat._id === state.selectedChat._id){
+          state.selectedChat = {...chat};
+        }
       }
     },
     updateChat(state, action){
       const id = action.payload._id
+      let found = false;
+      if(!action.payload.participants.includes(state.user._id)){
+        state.user.chats = state.user.chats.filter(c => c._id !== id);
+        state.user.chats = [...state.user.chats];
+        if (id === state.selectedChat?._id){
+          state.selectedChat = null;
+        }
+        return;
+      }
       state.user.chats.forEach(chat => {
         if (id === chat._id){
+          found = true
           chat.participants = action.payload.participants;
           chat.admins = action.payload.admins;
           chat.description = action.payload.description;
           chat.name = action.payload.name;
           chat.imageUrl = action.payload.imageUrl;
 
-          if (chat._id === state.selectedChat._id){
-            state.selectedChat = {...chat};
+          if (chat._id === state.selectedChat._id) {
+            state.selectedChat = { ...chat };
           }
         }
       });
+      if(!found){
+        const newChat = action.payload
+        newChat.typingUsers = [];
+        newChat.messages = [];
+        state.user.chats.push(newChat);
+        state.user.chats = [...state.user.chats];
+      }
     },
     updateUser(state, action) {
       state.user.email = action.payload.email;
@@ -189,7 +222,7 @@ export const userSlice = createSlice({
       .addCase(fetchUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
-        state.user.chats.forEach(chat => chat.typingUsers = []);
+        state.user.chats.forEach(chat => processChat(chat, state.user.joinedDict));
         localStorage.setItem("token", action.payload.token);
         state.token = action.payload.token;
         state.isLoggedIn = true;
@@ -198,8 +231,8 @@ export const userSlice = createSlice({
       })
       .addCase(fetchUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = "email or password invalid !";
-        console.log("user not found !");
+        state.error = action.error;
+        // state.error = "email or password invalid !";
       });
   },
 });

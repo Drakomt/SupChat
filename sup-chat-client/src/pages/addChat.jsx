@@ -57,11 +57,12 @@ export const AddChat = ({closeCb}) => {
       admins:adminIds,
       participants: participantIds,
       messages: [],
-      createdAt: Date.now()
+      createdAt: Date.now(),
+      createdBy: currentUser._id
     };
     console.log("new chat : ", newChat);
     emitNewChat(newChat);
-    closeCb();
+    // closeCb();
   };
 
   const form = (

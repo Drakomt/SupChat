@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import { IChat } from './chat.js';
 import { IMessage } from './message.js';
+import { Dictionary } from 'express-serve-static-core';
 
 // Define interface for the document
 export interface IUser extends Document {
@@ -11,6 +12,7 @@ export interface IUser extends Document {
   password: string;
   imageUrl: string;
   createdAt:{type:Date},
+  joinedDict:{type:Object}
 }
 
 // Define the schema
@@ -22,6 +24,7 @@ const UserSchema: Schema = new Schema({
   password: { type: String, required: true },
   imageUrl: {type: String},
   createdAt:{type:Date},
+  joinedDict:{type:Object, required: true}
 });
 
 // Define and export the model
