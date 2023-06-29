@@ -7,7 +7,9 @@ import { Schema } from "mongoose";
 import { Request,Response } from "express";
 import path from "path";
 import fs from "fs";
+import dotenv from "dotenv";
 const Dal = new Sup();
+dotenv.config();
 
 export async function signUp(request, response) {
   try {
@@ -62,7 +64,8 @@ export async function signUp(request, response) {
   }
 }
 
-export const SECRET_KEY = "mySecretKey";
+//export const SECRET_KEY = "mySecretKey";   //old token key
+const SECRET_KEY = process.env.SECRET_KEY;
 
 export async function getUserByToken(request, response) {
   try {

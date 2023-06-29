@@ -3,6 +3,9 @@ import { User } from "../schemas/user.js";
 import { Repository } from "./repository.js";
 import mongoose from "mongoose";
 import jwt from 'jsonwebtoken';
+import dotenv from "dotenv";
+dotenv.config();
+const SECRET_KEY = process.env.SECRET_KEY;
 export class UserRepository extends Repository {
     constructor(model) {
         super(model);
@@ -86,7 +89,7 @@ export class UserRepository extends Repository {
             console.log("******************* Token not found: ", token, " *******************");
             return response.status(401).json({ message: "No token provided" });
         }
-        jwt.verify(token, "mySecretKey", (error, decodedToken) => {
+        jwt.verify(token, SECRET_KEY, (error, decodedToken) => {
             if (error) {
                 console.log("******************* Error in verify Token: ", token, " *******************");
                 return response.status(403).json({ message: "Invalid token" });
@@ -98,7 +101,7 @@ export class UserRepository extends Repository {
     }
     async isValidToken(token) {
         return new Promise((resolve, reject) => {
-            jwt.verify(token, "mySecretKey", (error) => {
+            jwt.verify(token, SECRET_KEY, (error) => {
                 if (error) {
                     console.log("******************* Error in verify Token: ", token, " *******************");
                     resolve(false); // Token verification failed

@@ -5,7 +5,9 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import path from "path";
 import fs from "fs";
+import dotenv from "dotenv";
 const Dal = new Sup();
+dotenv.config();
 export async function signUp(request, response) {
     try {
         const saltRounds = 12;
@@ -54,7 +56,8 @@ export async function signUp(request, response) {
         response.redirect("signUp");
     }
 }
-export const SECRET_KEY = "mySecretKey";
+//export const SECRET_KEY = "mySecretKey";   //old token key
+const SECRET_KEY = process.env.SECRET_KEY;
 export async function getUserByToken(request, response) {
     try {
         const token = request.body.token;

@@ -16,7 +16,7 @@ export const ChatCard = (chat, key) => {
   const [dots, setDots] = useState(".");
   const dispatch = useDispatch();
   const isTyping = Array.isArray(chat.typingUsers) && chat.typingUsers.length > 0;
-  const lastMessage = chat.messages?.slice(-1)[0] ? chat.messages?.slice(-1)[0] : { dateTime: chat.createdAt, text: "last message" };
+  const lastMessage = chat.messages?.slice(-1)[0] ? chat.messages?.slice(-1)[0] : { dateTime: chat.createdAt, text: "Joined chat" };
   const date = new Date(lastMessage.dateTime);
   const timeStr = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false,});
   const options = ["details", "exit chat"];
