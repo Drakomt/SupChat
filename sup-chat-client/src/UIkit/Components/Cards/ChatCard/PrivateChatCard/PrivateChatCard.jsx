@@ -1,6 +1,6 @@
 import "./PrivateChatCard.css";
 import { useDispatch, useSelector } from "react-redux";
-import { selectNewMessageCount, setSelectedChat } from "../../../../../store/userSlice";
+import { selectNewMessageCount, setSelectedChat,viewChat } from "../../../../../store/userSlice";
 import { useEffect, useState } from "react";
 import { resetParticipants, setIsChatVisible, setIsUserInfoVisible, setViewChat } from "../../../../../store/chatDisplaySlice";
 import { DropDown } from "../../../DropDown/DropDown";
@@ -53,6 +53,7 @@ export const PrivateChatCard = ({chat, key}) => {
     if(isMobile){
       dispatch(setViewChat("chat"));
     }
+    // dispatch(viewChat({ chatId: chat._id }));
   };
   const shorter = (item) => {
     return item && item.length > 15 ? item.substring(0, 15) + "..." : item

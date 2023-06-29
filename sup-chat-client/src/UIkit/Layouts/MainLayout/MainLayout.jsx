@@ -76,7 +76,7 @@ export const MainLayout = () => {
     if (selectedChat?.participants){
       dispatch(fetchUserList(selectedChat.participants));
     }
-  }, [selectedChat]);
+  }, [selectedChat, dispatch]);
 
   const handleSetView = (view) => {
     dispatch(setViewChat(view));

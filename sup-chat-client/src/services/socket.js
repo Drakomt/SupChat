@@ -11,7 +11,6 @@ import {
 } from "../store/userSlice";
 import { setViewChat } from "../store/chatDisplaySlice";
 const URL = require("../URL.json").url;
-const token = localStorage.getItem("token");
 let socket = null;
 
 export const emitMessage = (message, chat) => {

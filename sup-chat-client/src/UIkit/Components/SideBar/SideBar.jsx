@@ -87,6 +87,7 @@ export const SideBar = () => {
   };
 
   const onSearch = (text) => {
+    console.log("search!!!!!", text)
     if(reFetch) { 
       dispatch(fetchUsers({user:{_id:user._id, friends: user.friends}, text:text || '..................'}));
     }

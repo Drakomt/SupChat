@@ -15,10 +15,17 @@ code {
 
 :root {
   --gap: 10px;
-  --primary: rgb(0, 68, 255);
-  --secondary: rgb(32, 136, 0);
-  --light-gray: #f1f1f1;
+  --dark-blue: #0B212F;
+  --primary: #1363DF;
+  --secondary: #47B5FF;
+  --light-gray: #daedf4;
+  --light-blue: #94e5ff;
+  --white: #FFFFFF;
+  --light-green: #a6f1a6;
 }
+
+/* rgb(0, 68, 255)
+rgb(32, 136, 0) */
 
 html,
 body,

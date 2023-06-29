@@ -29,7 +29,7 @@ const newMessage = async (data: any, io: Server, socket: Socket) => {
     await Dal.messageRep.add(newMessage);
     const chat = await Dal.chatRep.getById(chat_id);
     chat.messages.push(newMessage);
-    Dal.chatRep.update(chat_id, chat);
+    await Dal.chatRep.update(chat_id, chat);
   }
 
   if(messageData.image) {
