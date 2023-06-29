@@ -18,10 +18,15 @@
     width:20%;
 }
 
+.saveBtn {
+    background-color: var(--dark-blue);
+    color: var(--white);
+}
+
 .sticky {
     position: sticky;
     top: 0;
     z-index: 2;
-    background-color: aqua;
+    background-color: var(--secondary);
     padding: 5px;
 }

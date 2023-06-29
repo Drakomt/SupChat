@@ -66,7 +66,7 @@ export const SignUp = () => {
            <span style={{ color: "red" }}>{error && "invalid fields"}</span>
          </Rows>
          <Button type={"submit"} className="btn">Sign Up</Button>
-         or
+         <div className="or">or</div>
          <Button type={"button"} onClick={() => navigate("/login")} className="btn">Log In</Button>
        </form>
      </div>

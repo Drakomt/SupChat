@@ -82,7 +82,7 @@ export const Profile = ({ user }) => {
   return (
     <div className="profile">
       <Badge
-        color="secondary"
+        color="info"
         style={{ fontSize: 40 }}
         badgeContent={<CollectionsIcon />}
         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
@@ -145,7 +145,7 @@ export const Profile = ({ user }) => {
         />
       </ListItem>
       <ListItem>
-        <Button onClick={() => saveChanges()}>save</Button>
+        <Button onClick={() => saveChanges()} className={"saveBtn"}>save</Button>
       </ListItem>
     </div>
   );

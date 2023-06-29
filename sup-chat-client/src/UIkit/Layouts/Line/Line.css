@@ -9,6 +9,7 @@
 .Layout{
     align-items: start;
     gap: 0;
+    height: 100%;
 }
 
 .Line.Saparate{

@@ -53,7 +53,8 @@
 .btn{
     width: 100%;
     align-items: center;
-    background-color: var(--secondary);
+    background-color: var(--dark-blue);
+    color: var(--white);
     border: 1px solid black;
 }
 
@@ -61,8 +62,27 @@ form>input{
     width: fit-content;
 }
 
+.formRoot .inputContainer {
+    width: 91%;
+}
+
 h1 {
     white-space: nowrap;
+    text-align: center;
+}
+
+.or {
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.or::before, .or::after{
+    flex: 1;
+    content:'';
+    padding: 1px;
+    background-color: black;
+    margin: 7px;
 }
 
 @media screen and (min-width: 768px) {
