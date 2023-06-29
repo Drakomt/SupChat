@@ -66,5 +66,36 @@ export const Login = () => {
         </div>)
     return  ((error || !loading) && <AuthLayout>{form}</AuthLayout>) || (loading && <Loading/>)
 
+
+// const form = (
+//     <div className="logIn">
+//       <h1>Login</h1>
+//       <form onSubmit={submit} className="loginForm">
+//         <Rows>
+//           <Input
+//             placeholder="Email"
+//             name="email"
+//             defaultValue={inputData.current.email}
+//             onChange={(e) => inputData.current = { ...inputData.current, email: e.target.value }}
+//           />
+//           <Input
+//             type="password"
+//             placeholder="Password"
+//             name="password"
+//             defaultValue={inputData.current.password}
+//             onChange={(e) => inputData.current = { ...inputData.current, password: e.target.value }}
+//           />
+//           <Button type="submit" className="btn">Log In</Button>
+//           or
+//           <Button type="button" onClick={() => navigate("/signUp")} className="btn">Sign Up</Button>
+//           <span style={{ color: "red" }}>{error && error.message}</span>
+//         </Rows>
+//       </form>
+//     </div>
+//   );
+  
+//   return ((error || !loading) && <AuthLayout>{form}</AuthLayout>) || (loading && <Loading />);
+  
+
    
 }

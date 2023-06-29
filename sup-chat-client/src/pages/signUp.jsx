@@ -18,10 +18,12 @@ export const SignUp = () => {
         toast("success","sign up successful");
         navigate('/login');
      }
-    const [inputData, setInputData] = useState(null);
+    // const [inputData, setInputData] = useState(null);
     const {isSignedUp, error,loading} = useSelector(state => state.signUpSlice);
     console.log(isSignedUp, error, loading);
+
     if(isSignedUp) success();
+
     const submit = async (e) => {
       e.preventDefault();
       const formData = new FormData(e.target);
@@ -30,6 +32,7 @@ export const SignUp = () => {
       const password = formData.get('password');
       const confirmPassword = formData.get('confirmPassword');
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
       if (!email || !username || !password || !confirmPassword) {
         toast("error", "Please fill in all the fields.");
         return;
@@ -40,6 +43,21 @@ export const SignUp = () => {
         return;
       }
     
+      const usernameRegex = /^.{3,20}$/;
+      if (!usernameRegex.test(username)) {
+        toast("error", "Username must be between 3 and 20 characters.");
+        return;
+      }
+
+      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+      if (!passwordRegex.test(password)) {
+      toast(
+        "error",
+        "Password must contain at least 8 characters, including letters and numbers."
+      );
+        return;
+      }
+
       if (password !== confirmPassword) {
         toast("error", "Passwords do not match.");
         return;

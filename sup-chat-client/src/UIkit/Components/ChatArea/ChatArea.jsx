@@ -8,6 +8,7 @@ import { sendMessage } from "../../../store/userSlice";
 import { MessageList } from "../MessageList/MessageList";
 import SendIcon from "@mui/icons-material/Send";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
+import { toast } from "../../utils/sweetAlert";
 import {
   emitMessage,
   emitTyping,
@@ -16,6 +17,10 @@ import {
 import "./ChatArea.css";
 import { customFetch } from "../../utils/customFetch";
 import { FileInput } from "../Input/FileInput/FileInput";
+
+const displayToast = async (type, message) => {
+  await toast(type, message);
+}
 
 export const ChatArea = ({chat}) => {
   let typingTimeoutRef = useRef(null);
@@ -33,7 +38,7 @@ export const ChatArea = ({chat}) => {
     //console.log("new message!!!!!!!!", user)
     e.preventDefault();
     if(!text.trim() && !newMessage.image){
-      alert("enter message")
+      displayToast("error", "Please enter a message.");
     } else{ 
       newMessage.dateTime = Date.now();
       dispatch(sendMessage(newMessage));
