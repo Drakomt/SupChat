@@ -188,7 +188,7 @@ export const ChatInfo = ({ chat }) => {
       />
       <Rows>
         <Badge
-          color="secondary"
+          color="info"
           style={{ fontSize: 40 }}
           badgeContent={<CameraAltIcon />}
           anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
@@ -225,7 +225,7 @@ export const ChatInfo = ({ chat }) => {
             <Button
               onClick={() => setDialogData({ open: true, field: "name" })}
             >
-              <EditIcon />
+              <EditIcon color="info"/>
             </Button>
           )}
         </h1>
@@ -237,7 +237,7 @@ export const ChatInfo = ({ chat }) => {
                 setDialogData({ open: true, field: "description" })
               }
             >
-              <EditIcon />
+              <EditIcon color="info"/>
             </Button>
           )}
         </h3>
@@ -251,7 +251,7 @@ export const ChatInfo = ({ chat }) => {
         ></ParticipantList>
         {isAdmin && !doAddP && (
           <Button onClick={() => setDoAddP(true)}>
-            <AddCircleOutlineRoundedIcon color="black" />
+            <AddCircleOutlineRoundedIcon color="info" />
           </Button>
         )}
         {doAddP && <Select

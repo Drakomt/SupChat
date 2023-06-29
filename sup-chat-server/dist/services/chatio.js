@@ -24,7 +24,7 @@ const newMessage = async (data, io, socket) => {
         await Dal.messageRep.add(newMessage);
         const chat = await Dal.chatRep.getById(chat_id);
         chat.messages.push(newMessage);
-        Dal.chatRep.update(chat_id, chat);
+        await Dal.chatRep.update(chat_id, chat);
     }
     if (messageData.image) {
         const chat = await Dal.chatRep.getById(chat_id);

@@ -16,11 +16,7 @@ export const MessageCard = forwardRef(({message, key, className, onHeightReady},
     const handleOpen = () => setOpenModal(true);
     const handleClose = () => setOpenModal(false);
 
-    // const onLoad = () => {
-    //     if(ref.current){
-    //         onHeightReady(ref.current.getBoundingClientRect().height);
-    //     }
-    // }
+    //console.log("user", message.user)
 
     const modalStyle = {
         position: "absolute",
@@ -71,7 +67,7 @@ export const MessageCard = forwardRef(({message, key, className, onHeightReady},
         <Rows>
           <Saparate>
             <div>{message.user?.username}</div>
-            <div>{message.user?.email} </div>
+            {/* <div>{message.user?.email} </div> */}
           </Saparate>
           <Saparate>
             {message.image ? (

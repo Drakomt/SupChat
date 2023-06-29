@@ -58,7 +58,7 @@ export const Login = () => {
                     <Input placeholder={"Email"} name="email"/>
                     <Input type={"password"} placeholder={"Password"} name="password"/>
                     <Button type={"submit"} className="btn">Log In</Button>
-                    or
+                    <div className="or">or</div>
                     <Button type={"button"} onClick={() => navigate("/signUp")} className="btn">Sign Up</Button>
                     <span style={{color:"red"}}>{error && error.message}</span>
                 </Rows>

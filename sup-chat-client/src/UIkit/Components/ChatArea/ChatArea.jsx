@@ -14,8 +14,6 @@ import {
   emitTyping,
   emitStopTyping,
 } from "../../../services/socket";
-//import { Picker } from "emoji-mart";
-//import "emoji-mart/css/emoji-mart.css";
 import "./ChatArea.css";
 import { customFetch } from "../../utils/customFetch";
 import { FileInput } from "../Input/FileInput/FileInput";
@@ -28,19 +26,16 @@ export const ChatArea = ({chat}) => {
   let typingTimeoutRef = useRef(null);
   const fileInput = useRef(null);
   const dispatch = useDispatch();
-  // const chat = useSelector((state) => state.userSlice.selectedChat) || {
-  //   messages: [],
-  // };
   const messages = useSelector(
     (state) => state.userSlice.selectedChat?.messages
   );
   const user = useSelector((state) => state.userSlice.user);
   const [text, setText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const newMessage = { user:{_id:user._id}, text, dateTime: null };
+  const newMessage = { user:{_id:user._id,username: user.username}, text, dateTime: null };
 
   const sendNewMessage = (e) => {
-    console.log("new message!!!!!!!!")
+    //console.log("new message!!!!!!!!", user)
     e.preventDefault();
     if(!text.trim() && !newMessage.image){
       displayToast("error", "Please enter a message.");
