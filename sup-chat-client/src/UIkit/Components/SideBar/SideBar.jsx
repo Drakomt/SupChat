@@ -73,26 +73,8 @@ export const SideBar = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const cardType = useSelector((state) => state.SideBarDisplaySlice.cardType);
-  const { data, isLoading, error, reFetch } = useSelector(
-    (state) => state.SideBarDisplaySlice
-  );
+  const { data, isLoading, error, reFetch } = useSelector((state) => state.SideBarDisplaySlice);
   const user = useSelector(state => state.userSlice.user);
-  const filteredList =
-    data && data.filter((item) => filterItem(item, searchTerm));
-
-  const logoutButtonClick = () => {
-    disconnectSocket();
-    dispatch(logOut());
-    navigate("/login");
-  };
-
-  const onSearch = (text) => {
-    console.log("search!!!!!", text)
-    if(reFetch) { 
-      dispatch(fetchUsers({user:{_id:user._id, friends: user.friends}, text:text || '..................'}));
-    }
-    setSearchTerm(text);
-  }
 
   let sortedChats = data;
   if(Array.isArray(data) && data.every(item => item.hasOwnProperty('messages'))){
@@ -101,8 +83,23 @@ export const SideBar = () => {
       const lastMessageB = b.messages[b.messages.length - 1];
       const dateA = lastMessageA ? new Date(lastMessageA.dateTime) : new Date(a.createdAt);
       const dateB = lastMessageB ? new Date(lastMessageB.dateTime) : new Date(b.createdAt);
-      return dateB - dateA;
+      return dateB.getTime() - dateA.getTime();
     })
+  }
+
+  const filteredList = sortedChats && sortedChats.filter((item) => filterItem(item, searchTerm));
+
+  const logoutButtonClick = () => {
+    disconnectSocket();
+    dispatch(logOut());
+    navigate("/login");
+  };
+
+  const onSearch = (text) => {
+    if(reFetch) { 
+      dispatch(fetchUsers({user:{_id:user._id, friends: user.friends}, text:text || '..................'}));
+    }
+    setSearchTerm(text);
   }
 
   return (
@@ -116,8 +113,7 @@ export const SideBar = () => {
           </Saparate>
           <SearchBar onSearch={onSearch} className={"sticky"}/>
         {!isLoading && !error && (
-          // <CardList items={data ? filteredList : data} cardType={cardType} />
-          <CardList items={sortedChats ? sortedChats : filteredList} cardType={cardType} />
+          <CardList items={data ? filteredList : data} cardType={cardType} />
         )}
       </Rows>
     </div>
