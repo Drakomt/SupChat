@@ -11,6 +11,7 @@ import { fetchUsers } from "../../../store/sideBarDisplaySlice";
 import LogoutIcon from "@mui/icons-material/Logout";
 import "./SideBar.css";
 import { disconnectSocket } from "../../../services/socket";
+import { setIsChatVisible, setIsInfoVisible, setIsUserInfoVisible } from "../../../store/chatDisplaySlice";
 
 const hasTerm = (string, subString) => {
   return string.toUpperCase().includes(subString.toUpperCase());
@@ -92,6 +93,9 @@ export const SideBar = () => {
   const logoutButtonClick = () => {
     disconnectSocket();
     dispatch(logOut());
+    dispatch(setIsChatVisible(false));
+    dispatch(setIsInfoVisible(false));
+    dispatch(setIsUserInfoVisible(false));
     navigate("/login");
   };
 
