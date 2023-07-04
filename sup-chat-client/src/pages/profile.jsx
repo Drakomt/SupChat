@@ -4,7 +4,6 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
-  Divider,
   TextField,
   Typography,
   Badge,
@@ -93,18 +92,14 @@ export const Profile = ({ user }) => {
           src={`http://localhost:8080${user.imageUrl}`}
           style={{ height: "100px", width: "100px" }}
         />
-        <FileInput className={"file"} ref={fileInput} onTextChange={handleChange}/>
-      </Badge>
-      {/* <ListItem>
-        <CollectionsIcon style={{ fontSize: 40 }} onClick={handleFileInput} />
         <FileInput
           className={"file"}
-          forwardedref={fileInput}
+          ref={fileInput}
           onTextChange={handleChange}
         />
-      </ListItem> */}
+      </Badge>
       <ListItem>
-        <ListItemAvatar>
+        <ListItemAvatar className="centeredAvatar">
           <Avatar />
         </ListItemAvatar>
         <ListItemText
@@ -123,9 +118,8 @@ export const Profile = ({ user }) => {
           }
         />
       </ListItem>
-      {/* <Divider variant="inset" component="li" /> */}
       <ListItem>
-        <ListItemAvatar>
+        <ListItemAvatar className="centeredAvatar">
           <EmailIcon />
         </ListItemAvatar>
         <ListItemText
@@ -145,7 +139,9 @@ export const Profile = ({ user }) => {
         />
       </ListItem>
       <ListItem>
-        <Button onClick={() => saveChanges()} className={"saveBtn"}>save</Button>
+        <Button onClick={() => saveChanges()} className={"saveBtn"}>
+          save
+        </Button>
       </ListItem>
     </div>
   );
