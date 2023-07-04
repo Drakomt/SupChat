@@ -65,8 +65,8 @@ export const AddChat = ({closeCb}) => {
     // closeCb();
   };
 
-  const form = (
-    <div>
+  return (
+    <div className="addNewChat">
       <h1>Create New Chat</h1>
       <form onSubmit={submit}>
         <Rows>
@@ -80,6 +80,7 @@ export const AddChat = ({closeCb}) => {
             onTextChange={(desc) => setDescription(desc)}
             name="description"
           />
+          <div className="placeholder">Admins</div>
           <Select
             placeholder={"Admins"}
             isMulti
@@ -89,6 +90,7 @@ export const AddChat = ({closeCb}) => {
               { value: currentUser._id, label: currentUser.username },
             ]}
           />
+          <div className="placeholder">Participants</div>
           <Select
             placeholder={"Participants"}
             isMulti
@@ -105,6 +107,5 @@ export const AddChat = ({closeCb}) => {
       </form>
     </div>
   );
-
-  return <AuthLayout className={"addChatForm"}>{form}</AuthLayout>;
+  // return <AuthLayout className={"addChatForm"}>{form}</AuthLayout>;
 };

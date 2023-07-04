@@ -45,10 +45,28 @@
     margin: 10px;
 }
 
-.addChatForm{
-    width: 100%;
-    background-color: white;
+.addNewChat{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
 }
+
+.addNewChat > * {
+    padding: 15px;
+}
+
+.addNewChat .btn {
+    width: 200px;
+    align-self: center;
+}
+
+.addNewChat input{
+    min-width: 230px;
+    width: 95%;
+}
+
 
 .btn{
     width: 100%;
@@ -87,7 +105,7 @@ h1 {
 
 @media screen and (min-width: 768px) {
     .addChatForm {
-        width: 400px;
+        width: 390px;
     }
 }
 
