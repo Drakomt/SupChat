@@ -30,10 +30,30 @@
     justify-content: center;
     align-items:center;
     flex-direction: column;
-    min-width: 300px;
+    /* min-width: 300px; */
 }
 
-.sideBar,.profile,.addChatForm {
+.profile .MuiListItem-root {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.profile .MuiListItemText-root {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+}
+
+.profile .MuiListItemAvatar-root {
+  display: flex;
+  justify-content: center;
+  align-items: end;
+}
+
+.sideBar,.profile,.addNewChat {
     height: 100%;
     width: 100%;
 }
@@ -46,7 +66,7 @@
 @media screen and (min-width: 769px) {
     .sideBar,
     .profile,
-    .addChatForm {
+    .addNewChat {
         width: 20%;
         /* display: block; */
         min-width: 300px;

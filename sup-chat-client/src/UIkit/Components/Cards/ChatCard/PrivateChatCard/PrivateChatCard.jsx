@@ -54,7 +54,7 @@ export const PrivateChatCard = ({chat, key}) => {
     if(isMobile){
       dispatch(setViewChat("chat"));
     }
-    // dispatch(viewChat({ chatId: chat._id }));
+    dispatch(viewChat({ chatId: chat._id }));
   };
   const shorter = (item) => {
     return item && item.length > 15 ? item.substring(0, 15) + "..." : item
